@@ -1,0 +1,41 @@
+<?xml version="1.0"?>
+<project name="LibraryManagement" default="run">
+  <property name="src.dir" value="src/com" />
+  <property name="build.dir" value="bin/" />
+  <property name="main.class"
+    value="com.unazed.LibraryManagement.LibraryManagement" />
+  <property name="fx.path" value="lib/javafx-sdk-25.0.2/lib" />
+  <property name="pg.jar" value="lib/postgresql-42.7.10.jar" />
+
+  <target name="build">
+    <mkdir dir="${build.dir}" />
+    <fileset id="sources" dir="${src.dir}" includes="**/*.java" />
+    <pathconvert property="src.files" refid="sources" pathsep=" " />
+    <javac destdir="${build.dir}" includeantruntime="false">
+      <compilerarg value="--module-path" />
+      <compilerarg value="${fx.path}" />
+      <compilerarg value="--add-modules=javafx.controls" />
+      <src path="${src.dir}" />
+      <include name="**/*.java" />
+    </javac>
+  </target>
+
+  <target name="run" depends="build">
+    <java classname="${main.class}" fork="true">
+      <jvmarg value="--module-path" />
+      <jvmarg value="${fx.path}" />
+      <jvmarg value="--enable-native-access=javafx.graphics" />
+      <jvmarg value="--add-modules=javafx.controls" />
+      <classpath>
+	<pathelement path="${build.dir}" />
+	<pathelement path="${pg.jar}" />
+      </classpath>
+    </java>
+  </target>
+
+  <target name="clean">
+    <delete includeEmptyDirs="true">
+      <fileset dir="${build.dir}" />
+    </delete>
+  </target>
+</project>
