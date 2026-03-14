@@ -1,0 +1,3 @@
+[submodule "sqitch"]
+	path = sqitch
+	url = https://github.com/sqitchers/sqitch
