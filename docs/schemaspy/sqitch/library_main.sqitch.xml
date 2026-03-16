@@ -1,0 +1,127 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<database name="library_main" schema="sqitch" type="PostgreSQL - 18.2">
+   <tables>
+      <table catalog="library_main" name="changes" numRows="9" remarks="Tracks the changes currently deployed to the database." schema="sqitch" type="TABLE">
+         <column autoUpdated="false" defaultValue="null" digits="0" id="0" name="change_id" nullable="false" remarks="Change primary key." size="2147483647" type="text" typeCode="12">
+            <child catalog="library_main" column="change_id" foreignKey="dependencies_change_id_fkey" implied="false" onDeleteCascade="true" schema="sqitch" table="dependencies"/>
+            <child catalog="library_main" column="dependency_id" foreignKey="dependencies_dependency_id_fkey" implied="false" onDeleteCascade="false" schema="sqitch" table="dependencies"/>
+            <child catalog="library_main" column="change_id" foreignKey="tags_change_id_fkey" implied="false" onDeleteCascade="false" schema="sqitch" table="tags"/>
+         </column>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="1" name="script_hash" nullable="true" remarks="Deploy script SHA-1 hash." size="2147483647" type="text" typeCode="12"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="2" name="change" nullable="false" remarks="Name of a deployed change." size="2147483647" type="text" typeCode="12"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="3" name="project" nullable="false" remarks="Name of the Sqitch project to which the change belongs." size="2147483647" type="text" typeCode="12">
+            <parent catalog="library_main" column="project" foreignKey="changes_project_fkey" implied="false" onDeleteCascade="false" schema="sqitch" table="projects"/>
+         </column>
+         <column autoUpdated="false" defaultValue="''::text" digits="0" id="4" name="note" nullable="false" remarks="Description of the change." size="2147483647" type="text" typeCode="12"/>
+         <column autoUpdated="false" defaultValue="clock_timestamp()" digits="6" id="5" name="committed_at" nullable="false" remarks="Date the change was deployed." size="35" type="timestamptz" typeCode="93"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="6" name="committer_name" nullable="false" remarks="Name of the user who deployed the change." size="2147483647" type="text" typeCode="12"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="7" name="committer_email" nullable="false" remarks="Email address of the user who deployed the change." size="2147483647" type="text" typeCode="12"/>
+         <column autoUpdated="false" defaultValue="null" digits="6" id="8" name="planned_at" nullable="false" remarks="Date the change was added to the plan." size="35" type="timestamptz" typeCode="93"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="9" name="planner_name" nullable="false" remarks="Name of the user who planed the change." size="2147483647" type="text" typeCode="12"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="10" name="planner_email" nullable="false" remarks="Email address of the user who planned the change." size="2147483647" type="text" typeCode="12"/>
+         <primaryKey column="change_id" sequenceNumberInPK="1"/>
+         <index name="changes_pkey" unique="true">
+            <column ascending="true" name="change_id"/>
+         </index>
+         <index name="changes_project_script_hash_key" unique="true">
+            <column ascending="true" name="project"/>
+            <column ascending="true" name="script_hash"/>
+         </index>
+      </table>
+      <table catalog="library_main" name="dependencies" remarks="Tracks the currently satisfied dependencies." schema="sqitch" type="TABLE">
+         <column autoUpdated="false" defaultValue="null" digits="0" id="0" name="change_id" nullable="false" remarks="ID of the depending change." size="2147483647" type="text" typeCode="12">
+            <parent catalog="library_main" column="change_id" foreignKey="dependencies_change_id_fkey" implied="false" onDeleteCascade="true" schema="sqitch" table="changes"/>
+         </column>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="1" name="type" nullable="false" remarks="Type of dependency." size="2147483647" type="text" typeCode="12"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="2" name="dependency" nullable="false" remarks="Dependency name." size="2147483647" type="text" typeCode="12"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="3" name="dependency_id" nullable="true" remarks="Change ID the dependency resolves to." size="2147483647" type="text" typeCode="12">
+            <parent catalog="library_main" column="change_id" foreignKey="dependencies_dependency_id_fkey" implied="false" onDeleteCascade="false" schema="sqitch" table="changes"/>
+         </column>
+         <primaryKey column="change_id" sequenceNumberInPK="1"/>
+         <primaryKey column="dependency" sequenceNumberInPK="2"/>
+         <index name="dependencies_pkey" unique="true">
+            <column ascending="true" name="change_id"/>
+            <column ascending="true" name="dependency"/>
+         </index>
+         <checkConstraint constraint="(((type = 'require'::text) AND (dependency_id IS NOT NULL)) OR ((type = 'conflict'::text) AND (dependency_id IS NULL)))" name="dependencies_check"/>
+      </table>
+      <table catalog="library_main" name="events" numRows="548" remarks="Contains full history of all deployment events." schema="sqitch" type="TABLE">
+         <column autoUpdated="false" defaultValue="null" digits="0" id="0" name="event" nullable="false" remarks="Type of event." size="2147483647" type="text" typeCode="12"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="1" name="change_id" nullable="false" remarks="Change ID." size="2147483647" type="text" typeCode="12"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="2" name="change" nullable="false" remarks="Change name." size="2147483647" type="text" typeCode="12"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="3" name="project" nullable="false" remarks="Name of the Sqitch project to which the change belongs." size="2147483647" type="text" typeCode="12">
+            <parent catalog="library_main" column="project" foreignKey="events_project_fkey" implied="false" onDeleteCascade="false" schema="sqitch" table="projects"/>
+         </column>
+         <column autoUpdated="false" defaultValue="''::text" digits="0" id="4" name="note" nullable="false" remarks="Description of the change." size="2147483647" type="text" typeCode="12"/>
+         <column autoUpdated="false" defaultValue="'{}'::text[]" digits="0" id="5" name="requires" nullable="false" remarks="Array of the names of required changes." size="2147483647" type="_text" typeCode="2003"/>
+         <column autoUpdated="false" defaultValue="'{}'::text[]" digits="0" id="6" name="conflicts" nullable="false" remarks="Array of the names of conflicting changes." size="2147483647" type="_text" typeCode="2003"/>
+         <column autoUpdated="false" defaultValue="'{}'::text[]" digits="0" id="7" name="tags" nullable="false" remarks="Tags associated with the change." size="2147483647" type="_text" typeCode="2003"/>
+         <column autoUpdated="false" defaultValue="clock_timestamp()" digits="6" id="8" name="committed_at" nullable="false" remarks="Date the event was committed." size="35" type="timestamptz" typeCode="93"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="9" name="committer_name" nullable="false" remarks="Name of the user who committed the event." size="2147483647" type="text" typeCode="12"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="10" name="committer_email" nullable="false" remarks="Email address of the user who committed the event." size="2147483647" type="text" typeCode="12"/>
+         <column autoUpdated="false" defaultValue="null" digits="6" id="11" name="planned_at" nullable="false" remarks="Date the event was added to the plan." size="35" type="timestamptz" typeCode="93"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="12" name="planner_name" nullable="false" remarks="Name of the user who planed the change." size="2147483647" type="text" typeCode="12"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="13" name="planner_email" nullable="false" remarks="Email address of the user who plan planned the change." size="2147483647" type="text" typeCode="12"/>
+         <primaryKey column="change_id" sequenceNumberInPK="1"/>
+         <primaryKey column="committed_at" sequenceNumberInPK="2"/>
+         <index name="events_pkey" unique="true">
+            <column ascending="true" name="change_id"/>
+            <column ascending="true" name="committed_at"/>
+         </index>
+         <checkConstraint constraint="(event = ANY (ARRAY['deploy'::text, 'revert'::text, 'fail'::text, 'merge'::text]))" name="events_event_check"/>
+      </table>
+      <table catalog="library_main" name="projects" remarks="Sqitch projects deployed to this database." schema="sqitch" type="TABLE">
+         <column autoUpdated="false" defaultValue="null" digits="0" id="0" name="project" nullable="false" remarks="Unique Name of a project." size="2147483647" type="text" typeCode="12">
+            <child catalog="library_main" column="project" foreignKey="changes_project_fkey" implied="false" onDeleteCascade="false" schema="sqitch" table="changes"/>
+            <child catalog="library_main" column="project" foreignKey="events_project_fkey" implied="false" onDeleteCascade="false" schema="sqitch" table="events"/>
+            <child catalog="library_main" column="project" foreignKey="tags_project_fkey" implied="false" onDeleteCascade="false" schema="sqitch" table="tags"/>
+         </column>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="1" name="uri" nullable="true" remarks="Optional project URI" size="2147483647" type="text" typeCode="12"/>
+         <column autoUpdated="false" defaultValue="clock_timestamp()" digits="6" id="2" name="created_at" nullable="false" remarks="Date the project was added to the database." size="35" type="timestamptz" typeCode="93"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="3" name="creator_name" nullable="false" remarks="Name of the user who added the project." size="2147483647" type="text" typeCode="12"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="4" name="creator_email" nullable="false" remarks="Email address of the user who added the project." size="2147483647" type="text" typeCode="12"/>
+         <primaryKey column="project" sequenceNumberInPK="1"/>
+         <index name="projects_pkey" unique="true">
+            <column ascending="true" name="project"/>
+         </index>
+         <index name="projects_uri_key" unique="true">
+            <column ascending="true" name="uri"/>
+         </index>
+      </table>
+      <table catalog="library_main" name="releases" remarks="Sqitch registry releases." schema="sqitch" type="TABLE">
+         <column autoUpdated="false" defaultValue="null" digits="8" id="0" name="version" nullable="false" remarks="Version of the Sqitch registry." size="8" type="float4" typeCode="7"/>
+         <column autoUpdated="false" defaultValue="clock_timestamp()" digits="6" id="1" name="installed_at" nullable="false" remarks="Date the registry release was installed." size="35" type="timestamptz" typeCode="93"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="2" name="installer_name" nullable="false" remarks="Name of the user who installed the registry release." size="2147483647" type="text" typeCode="12"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="3" name="installer_email" nullable="false" remarks="Email address of the user who installed the registry release." size="2147483647" type="text" typeCode="12"/>
+         <primaryKey column="version" sequenceNumberInPK="1"/>
+         <index name="releases_pkey" unique="true">
+            <column ascending="true" name="version"/>
+         </index>
+      </table>
+      <table catalog="library_main" name="tags" remarks="Tracks the tags currently applied to the database." schema="sqitch" type="TABLE">
+         <column autoUpdated="false" defaultValue="null" digits="0" id="0" name="tag_id" nullable="false" remarks="Tag primary key." size="2147483647" type="text" typeCode="12"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="1" name="tag" nullable="false" remarks="Project-unique tag name." size="2147483647" type="text" typeCode="12"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="2" name="project" nullable="false" remarks="Name of the Sqitch project to which the tag belongs." size="2147483647" type="text" typeCode="12">
+            <parent catalog="library_main" column="project" foreignKey="tags_project_fkey" implied="false" onDeleteCascade="false" schema="sqitch" table="projects"/>
+         </column>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="3" name="change_id" nullable="false" remarks="ID of last change deployed before the tag was applied." size="2147483647" type="text" typeCode="12">
+            <parent catalog="library_main" column="change_id" foreignKey="tags_change_id_fkey" implied="false" onDeleteCascade="false" schema="sqitch" table="changes"/>
+         </column>
+         <column autoUpdated="false" defaultValue="''::text" digits="0" id="4" name="note" nullable="false" remarks="Description of the tag." size="2147483647" type="text" typeCode="12"/>
+         <column autoUpdated="false" defaultValue="clock_timestamp()" digits="6" id="5" name="committed_at" nullable="false" remarks="Date the tag was applied to the database." size="35" type="timestamptz" typeCode="93"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="6" name="committer_name" nullable="false" remarks="Name of the user who applied the tag." size="2147483647" type="text" typeCode="12"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="7" name="committer_email" nullable="false" remarks="Email address of the user who applied the tag." size="2147483647" type="text" typeCode="12"/>
+         <column autoUpdated="false" defaultValue="null" digits="6" id="8" name="planned_at" nullable="false" remarks="Date the tag was added to the plan." size="35" type="timestamptz" typeCode="93"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="9" name="planner_name" nullable="false" remarks="Name of the user who planed the tag." size="2147483647" type="text" typeCode="12"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="10" name="planner_email" nullable="false" remarks="Email address of the user who planned the tag." size="2147483647" type="text" typeCode="12"/>
+         <primaryKey column="tag_id" sequenceNumberInPK="1"/>
+         <index name="tags_pkey" unique="true">
+            <column ascending="true" name="tag_id"/>
+         </index>
+         <index name="tags_project_tag_key" unique="true">
+            <column ascending="true" name="project"/>
+            <column ascending="true" name="tag"/>
+         </index>
+      </table>
+   </tables>
+</database>

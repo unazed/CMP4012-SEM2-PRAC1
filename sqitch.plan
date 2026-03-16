@@ -7,3 +7,8 @@ user 2026-03-16T10:30:41Z Mindaugas Taujanskas <mindaugas.taujanskas@proton.me> 
 books 2026-03-16T10:53:37Z Mindaugas Taujanskas <mindaugas.taujanskas@proton.me> # Add book table
 loan 2026-03-16T11:13:35Z Mindaugas Taujanskas <mindaugas.taujanskas@proton.me> # Add book loaning
 digital_book_loans 2026-03-16T11:39:15Z Mindaugas Taujanskas <mindaugas.taujanskas@proton.me> # Add digital book loaning
+jwt 2026-03-16T12:34:28Z Mindaugas Taujanskas <mindaugas.taujanskas@proton.me> # pgjwt/pgcrypto extensions
+permissions 2026-03-16T13:44:25Z Mindaugas Taujanskas <mindaugas.taujanskas@proton.me> # Define schema permissions for API users
+register 2026-03-16T13:53:47Z Mindaugas Taujanskas <mindaugas.taujanskas@proton.me> # Registration procedures
+login 2026-03-16T17:44:28Z Mindaugas Taujanskas <mindaugas.taujanskas@proton.me> # Login procedures
+token_decode 2026-03-16T18:55:52Z Mindaugas Taujanskas <mindaugas.taujanskas@proton.me> # Session token decoding utility

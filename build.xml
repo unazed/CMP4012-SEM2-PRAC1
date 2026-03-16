@@ -53,11 +53,25 @@
       <arg value="postgres" />
       <arg value="-dp" />
       <arg value="${pg.jar}" />
-      <arg value="-schemas" />
-      <arg value="library" />
+      <arg value="-all" />
+      <arg value="-schemaSpec (library)|(library_internal)|(library_api)" />
       <arg value="-o" />
       <arg value="docs/schemaspy" />
     </java>
+  </target>
+
+  <target name="sql-deploy">
+    <exec executable="sqitch" failonerror="true">
+      <arg value="deploy" />
+      <arg value="--set" />
+      <arg value="JWT_SECRET=${jwt_secret}" />
+    </exec>
+  </target>
+
+  <target name="sql-revert">
+    <exec executable="sqitch" failonerror="true">
+      <arg value="revert" />
+    </exec>
   </target>
 
 </project>

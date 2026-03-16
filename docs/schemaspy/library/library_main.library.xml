@@ -118,6 +118,7 @@
          <index name="pk_users" unique="true">
             <column ascending="true" name="user_id"/>
          </index>
+         <index name="idx_users__normalized_email" unique="true"/>
          <index name="users_email_key" unique="true">
             <column ascending="true" name="email"/>
          </index>
