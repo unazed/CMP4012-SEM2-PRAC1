@@ -2,32 +2,28 @@
 
 BEGIN;
 
-  CREATE TABLE library.UserStatuses (
-    user_status	TEXT UNIQUE NOT NULL
+  CREATE TYPE library.user_role AS ENUM (
+    'librarian',
+    'member'
   );
-
-  CREATE TABLE library.UserRoles (
-    user_role	TEXT UNIQUE NOT NULL
+  
+  CREATE TYPE library.user_status AS ENUM (
+    'active',
+    'suspended',
+    'deleted'
   );
 
   CREATE TABLE library.Users (
     user_id		INTEGER GENERATED ALWAYS AS IDENTITY,
     email 		TEXT UNIQUE NOT NULL,
     username		TEXT UNIQUE NOT NULL,
-    user_role		TEXT,
-    user_status		TEXT,
+    user_role		library.user_role,
+    user_status		library.user_status,
     password_hash 	TEXT NOT NULL,
+    
+    created_at		TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
 
     CONSTRAINT PK_Users PRIMARY KEY (user_id),
-
-    CONSTRAINT FK_Users__user_role
-      FOREIGN KEY (user_role)
-      REFERENCES library.UserRoles(user_role)
-      ON DELETE SET NULL,
-    CONSTRAINT FK_Users__user_status
-      FOREIGN KEY (user_status)
-      REFERENCES library.UserStatuses(user_status)
-      ON DELETE SET NULL,
 
     CONSTRAINT CHK_Users__email_validate
       CHECK (email LIKE '%@%')

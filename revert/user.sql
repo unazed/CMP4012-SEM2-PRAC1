@@ -3,7 +3,7 @@
 BEGIN;
 
   DROP TABLE library.Users;
-  DROP TABLE library.UserRoles;
-  DROP TABLE library.UserStatuses;
+  DROP TYPE library.user_role;
+  DROP TYPE library.user_status;
 
 COMMIT;
