@@ -1,0 +1,5 @@
+date=2026-03-16 11:53:14+0000
+os=Linux 6.12.58-gentoo
+schemaspy-version=7.0.2
+schemaspy-revision=v7.0.2
+renderer=Graphviz dot 12.2.1 

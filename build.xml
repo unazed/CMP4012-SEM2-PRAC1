@@ -38,4 +38,26 @@
       <fileset dir="${build.dir}" />
     </delete>
   </target>
+
+  <target name="schemaspy">
+    <java jar="lib/schemaspy-app.jar" fork="true">
+      <arg value="-t" />
+      <arg value="pgsql" />
+      <arg value="-host" />
+      <arg value="localhost" />
+      <arg value="-db" />
+      <arg value="library_main" />
+      <arg value="-u" />
+      <arg value="postgres" />
+      <arg value="-p" />
+      <arg value="postgres" />
+      <arg value="-dp" />
+      <arg value="${pg.jar}" />
+      <arg value="-schemas" />
+      <arg value="library" />
+      <arg value="-o" />
+      <arg value="docs/schemaspy" />
+    </java>
+  </target>
+
 </project>

@@ -1,0 +1,8 @@
+books
+users
+authors
+digitalbooks
+physicalbooks
+bookauthors
+digitalbookloans
+physicalbookloans

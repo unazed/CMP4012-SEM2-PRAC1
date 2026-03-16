@@ -6,6 +6,7 @@ BEGIN;
     book_id		INTEGER GENERATED ALWAYS AS IDENTITY,
     book_name		TEXT NOT NULL,
     book_publish_date	DATE NOT NULL,
+    book_has_digital	BOOLEAN NOT NULL,
     isbn 		TEXT,
 
     CONSTRAINT PK_Books
