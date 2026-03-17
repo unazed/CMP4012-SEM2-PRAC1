@@ -3,17 +3,17 @@
 BEGIN;
 
   CREATE TABLE library.DigitalBookLoans (
-    book_id	INTEGER NOT NULL,
+    book_isbn	TEXT NOT NULL,
     user_id	INTEGER NOT NULL,
     loan_date	TIMESTAMPTZ NOT NULL,
     loan_expiry	TIMESTAMPTZ,  -- NULL = no expiry date
 
     CONSTRAINT PK_DigitalBookLoans
-      PRIMARY KEY (book_id, user_id, loan_date),
+      PRIMARY KEY (book_isbn, user_id, loan_date),
 
     CONSTRAINT FK_DigitalBookLoans__book
-      FOREIGN KEY (book_id)
-      REFERENCES library.DigitalBooks(book_id)
+      FOREIGN KEY (book_isbn)
+      REFERENCES library.DigitalBooks(book_isbn)
       ON DELETE CASCADE,
     CONSTRAINT FK_DigitalBookLoans__user
       FOREIGN KEY (user_id)

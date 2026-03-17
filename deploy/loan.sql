@@ -3,15 +3,15 @@
 BEGIN;
 
   CREATE TABLE library.PhysicalBooks (
-    book_id		INTEGER NOT NULL,
+    book_isbn		TEXT NOT NULL,
     book_quantity	INTEGER NOT NULL,
 
     CONSTRAINT PK_PhysicalBooks
-      PRIMARY KEY (book_id),
+      PRIMARY KEY (book_isbn),
 
-    CONSTRAINT FK_PhysicalBook__book_id
-      FOREIGN KEY (book_id)
-      REFERENCES library.Books(book_id)
+    CONSTRAINT FK_PhysicalBook__book_isbn
+      FOREIGN KEY (book_isbn)
+      REFERENCES library.Books(book_isbn)
       ON DELETE CASCADE,
 
     CONSTRAINT CHK_PhysicalBook__valid_quantity
@@ -19,20 +19,20 @@ BEGIN;
   );
 
   CREATE TABLE library.DigitalBooks (
-    book_id	INTEGER NOT NULL,
-    book_url	TEXT NOT NULL,
+    book_isbn	TEXT NOT NULL,
+    book_url	TEXT,
 
     CONSTRAINT PK_DigitalBooks
-      PRIMARY KEY (book_id),
+      PRIMARY KEY (book_isbn),
 
-    CONSTRAINT FK_DigitalBook__book_id
-      FOREIGN KEY (book_id)
-      REFERENCES library.Books(book_id)
+    CONSTRAINT FK_DigitalBook__book_isbn
+      FOREIGN KEY (book_isbn)
+      REFERENCES library.Books(book_isbn)
       ON DELETE CASCADE
   );
 
   CREATE TABLE library.PhysicalBookLoans (
-    book_id		INTEGER NOT NULL,
+    book_isbn		TEXT NOT NULL,
     user_id		INTEGER NOT NULL,
 
     loan_date		TIMESTAMPTZ NOT NULL,
@@ -40,11 +40,11 @@ BEGIN;
     loan_returned	BOOLEAN DEFAULT FALSE NOT NULL,
 
     CONSTRAINT PK_PhysicalBookLoan
-      PRIMARY KEY (book_id, user_id, loan_date),
+      PRIMARY KEY (book_isbn, user_id, loan_date),
 
     CONSTRAINT FK_PhysicalBookLoans__book
-      FOREIGN KEY (book_id)
-      REFERENCES library.PhysicalBooks(book_id),
+      FOREIGN KEY (book_isbn)
+      REFERENCES library.PhysicalBooks(book_isbn),
     CONSTRAINT FK_PhysicalBookLoans__user
       FOREIGN KEY (user_id)
       REFERENCES library.Users(user_id),

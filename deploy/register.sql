@@ -5,7 +5,9 @@ BEGIN;
   CREATE TYPE library_internal.auth_error_code AS ENUM (
     'user_exists',
     'login_invalid',
-    'account_disabled'
+    'account_disabled',
+    'token_invalid',
+    'insufficient_permissions'
   );
 
   CREATE TYPE library_internal.result_type AS (
