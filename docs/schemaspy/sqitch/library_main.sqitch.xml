@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <database name="library_main" schema="sqitch" type="PostgreSQL - 18.2">
    <tables>
-      <table catalog="library_main" name="changes" numRows="9" remarks="Tracks the changes currently deployed to the database." schema="sqitch" type="TABLE">
+      <table catalog="library_main" name="changes" numRows="11" remarks="Tracks the changes currently deployed to the database." schema="sqitch" type="TABLE">
          <column autoUpdated="false" defaultValue="null" digits="0" id="0" name="change_id" nullable="false" remarks="Change primary key." size="2147483647" type="text" typeCode="12">
             <child catalog="library_main" column="change_id" foreignKey="dependencies_change_id_fkey" implied="false" onDeleteCascade="true" schema="sqitch" table="dependencies"/>
             <child catalog="library_main" column="dependency_id" foreignKey="dependencies_dependency_id_fkey" implied="false" onDeleteCascade="false" schema="sqitch" table="dependencies"/>
@@ -45,7 +45,7 @@
          </index>
          <checkConstraint constraint="(((type = 'require'::text) AND (dependency_id IS NOT NULL)) OR ((type = 'conflict'::text) AND (dependency_id IS NULL)))" name="dependencies_check"/>
       </table>
-      <table catalog="library_main" name="events" numRows="548" remarks="Contains full history of all deployment events." schema="sqitch" type="TABLE">
+      <table catalog="library_main" name="events" numRows="795" remarks="Contains full history of all deployment events." schema="sqitch" type="TABLE">
          <column autoUpdated="false" defaultValue="null" digits="0" id="0" name="event" nullable="false" remarks="Type of event." size="2147483647" type="text" typeCode="12"/>
          <column autoUpdated="false" defaultValue="null" digits="0" id="1" name="change_id" nullable="false" remarks="Change ID." size="2147483647" type="text" typeCode="12"/>
          <column autoUpdated="false" defaultValue="null" digits="0" id="2" name="change" nullable="false" remarks="Change name." size="2147483647" type="text" typeCode="12"/>

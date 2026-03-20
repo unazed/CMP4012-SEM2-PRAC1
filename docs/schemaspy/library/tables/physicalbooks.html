@@ -109,16 +109,16 @@
                                 </thead>
                                 <tbody>
                                 <tr>
-                                    <td class='primaryKey' title='Primary Key'><i class='icon ion-key iconkey' style='padding-left: 5px;'></i><span id="book_id">book_id</span></td>
-                                    <td>int4</td>
-                                    <td>10</td>
+                                    <td class='primaryKey' title='Primary Key'><i class='icon ion-key iconkey' style='padding-left: 5px;'></i><span id="book_isbn">book_isbn</span></td>
+                                    <td>text</td>
+                                    <td>2147483647</td>
                                     <td title=''></td>
                                     <td title=''></td>
                                     <td>null</td>
                                     <td>
                                         <table border='0' cellspacing='0' cellpadding='0'>
                                             <tr>
-                                                <td title="physicalbookloans.book_id references physicalbooks.book_id via fk_physicalbookloans__book"><a href='physicalbookloans.html'>physicalbookloans</a><span class='relatedKey'>.book_id</span></td>
+                                                <td title="physicalbookloans.book_isbn references physicalbooks.book_isbn via fk_physicalbookloans__book"><a href='physicalbookloans.html'>physicalbookloans</a><span class='relatedKey'>.book_isbn</span></td>
                                                 <td class="constraint detail">fk_physicalbookloans__book</td>
                                                 <td class="constraint detail"><span title='Restrict delete:&#10;Parent cannot be deleted if children exist'>R</span></td>
                                             </tr>
@@ -127,8 +127,8 @@
                                     <td>
                                         <table border='0' cellspacing='0' cellpadding='0'>
                                             <tr>
-                                                <td title="physicalbooks.book_id references books.book_id via fk_physicalbook__book_id"><a href='books.html'>books</a><span class='relatedKey'>.book_id</span></td>
-                                                <td class="constraint detail">fk_physicalbook__book_id</td>
+                                                <td title="physicalbooks.book_isbn references books.book_isbn via fk_physicalbook__book_isbn"><a href='books.html'>books</a><span class='relatedKey'>.book_isbn</span></td>
+                                                <td class="constraint detail">fk_physicalbook__book_isbn</td>
                                                 <td class="constraint detail"><span title='Cascade on delete:&#10;Deletion of parent deletes child'>C</span></td>
                                             </tr>
                                         </table>
@@ -186,7 +186,7 @@
                                     <td class='primaryKey' title='Primary Key'><i class='icon ion-key iconkey'></i> pk_physicalbooks</td>
                                     <td>Primary key</td>
                                     <td><span title='Ascending'>Asc</span></td>
-                                    <td>book_id</td>
+                                    <td>book_isbn</td>
                                 </tr>
                                 </tbody>
                             </table>
@@ -243,20 +243,20 @@
                                 <div class="tab-content no-padding">
                                     <div class="chart tab-pane active" id="oneDegreeImg-chart" style="position: relative; overflow-x:auto;">
                                         <map id="oneDegreeRelationshipsDiagram" name="oneDegreeRelationshipsDiagram">
-<area shape="rect" id="node1" href="physicalbookloans.html" target="_top" title="physicalbookloans" alt="" coords="599,7,838,189">
-<area shape="rect" id="node2" href="physicalbooks.html" target="_top" title="physicalbooks" alt="" coords="256,5,555,137">
+<area shape="rect" id="node1" href="physicalbookloans.html" target="_top" title="physicalbookloans" alt="" coords="636,7,876,189">
+<area shape="rect" id="node2" href="physicalbooks.html" target="_top" title="physicalbooks" alt="" coords="256,5,592,137">
 <area shape="rect" id="node3" href="books.html" target="_top" title="books" alt="" coords="5,8,212,132">
 </map>
                                         <a name='diagram'><img id="oneDegreeImg" src="../diagrams/tables/physicalbooks.1degree.png" usemap="#oneDegreeRelationshipsDiagram" class="diagram" border="0" align="left"></a>
                                     </div>
                                     <div class="chart tab-pane " id="twodegreesDegreeImg-chart" style="position: relative; overflow-x:auto;">
                                         <map id="twoDegreesRelationshipsDiagram" name="twoDegreesRelationshipsDiagram">
-<area shape="rect" id="node1" href="bookauthors.html" target="_top" title="bookauthors" alt="" coords="312,5,499,99">
+<area shape="rect" id="node1" href="bookauthors.html" target="_top" title="bookauthors" alt="" coords="330,5,518,99">
 <area shape="rect" id="node2" href="books.html" target="_top" title="books" alt="" coords="5,115,212,238">
-<area shape="rect" id="node3" href="digitalbooks.html" target="_top" title="digitalbooks" alt="" coords="313,117,498,211">
-<area shape="rect" id="node4" href="physicalbookloans.html" target="_top" title="physicalbookloans" alt="" coords="599,289,838,471">
-<area shape="rect" id="node5" href="physicalbooks.html" target="_top" title="physicalbooks" alt="" coords="256,229,555,361">
-<area shape="rect" id="node6" href="users.html" target="_top" title="users" alt="" coords="341,379,470,473">
+<area shape="rect" id="node3" href="digitalbooks.html" target="_top" title="digitalbooks" alt="" coords="331,117,516,211">
+<area shape="rect" id="node4" href="physicalbookloans.html" target="_top" title="physicalbookloans" alt="" coords="636,289,876,471">
+<area shape="rect" id="node5" href="physicalbooks.html" target="_top" title="physicalbooks" alt="" coords="256,229,592,361">
+<area shape="rect" id="node6" href="users.html" target="_top" title="users" alt="" coords="359,379,488,473">
 </map>
                                         <a name='diagram'><img id="twodegreesDegreeImg" src="../diagrams/tables/physicalbooks.2degrees.png" usemap="#twoDegreesRelationshipsDiagram" class="diagram" border="0" align="left"></a>
                                     </div>

@@ -13,3 +13,4 @@ register 2026-03-16T13:53:47Z Mindaugas Taujanskas <mindaugas.taujanskas@proton.
 login 2026-03-16T17:44:28Z Mindaugas Taujanskas <mindaugas.taujanskas@proton.me> # Login procedures
 token_decode 2026-03-16T18:55:52Z Mindaugas Taujanskas <mindaugas.taujanskas@proton.me> # Session token decoding utility
 add_book 2026-03-16T19:12:03Z Mindaugas Taujanskas <mindaugas.taujanskas@proton.me> # Registering a new book to the library
+add_loan 2026-03-17T10:59:07Z Mindaugas Taujanskas <mindaugas.taujanskas@proton.me> # Procedures for creating/modifying loans

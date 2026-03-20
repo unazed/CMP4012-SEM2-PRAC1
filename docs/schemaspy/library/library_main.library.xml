@@ -16,64 +16,63 @@
          <column autoUpdated="false" defaultValue="null" digits="0" id="0" name="author_id" nullable="false" remarks="" size="10" type="int4" typeCode="4">
             <parent catalog="library_main" column="author_id" foreignKey="fk_bookauthors__author" implied="false" onDeleteCascade="true" schema="library" table="authors"/>
          </column>
-         <column autoUpdated="false" defaultValue="null" digits="0" id="1" name="book_id" nullable="false" remarks="" size="10" type="int4" typeCode="4">
-            <parent catalog="library_main" column="book_id" foreignKey="fk_bookauthors__book" implied="false" onDeleteCascade="true" schema="library" table="books"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="1" name="book_isbn" nullable="false" remarks="" size="2147483647" type="text" typeCode="12">
+            <parent catalog="library_main" column="book_isbn" foreignKey="fk_bookauthors__book" implied="false" onDeleteCascade="true" schema="library" table="books"/>
          </column>
          <primaryKey column="author_id" sequenceNumberInPK="1"/>
-         <primaryKey column="book_id" sequenceNumberInPK="2"/>
+         <primaryKey column="book_isbn" sequenceNumberInPK="2"/>
          <index name="pk_bookauthors" unique="true">
             <column ascending="true" name="author_id"/>
-            <column ascending="true" name="book_id"/>
+            <column ascending="true" name="book_isbn"/>
          </index>
       </table>
       <table catalog="library_main" name="books" remarks="" schema="library" type="TABLE">
-         <column autoUpdated="true" defaultValue="null" digits="0" id="0" name="book_id" nullable="false" remarks="" size="10" type="int4" typeCode="4">
-            <child catalog="library_main" column="book_id" foreignKey="fk_bookauthors__book" implied="false" onDeleteCascade="true" schema="library" table="bookauthors"/>
-            <child catalog="library_main" column="book_id" foreignKey="fk_digitalbook__book_id" implied="false" onDeleteCascade="true" schema="library" table="digitalbooks"/>
-            <child catalog="library_main" column="book_id" foreignKey="fk_physicalbook__book_id" implied="false" onDeleteCascade="true" schema="library" table="physicalbooks"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="0" name="book_isbn" nullable="false" remarks="" size="2147483647" type="text" typeCode="12">
+            <child catalog="library_main" column="book_isbn" foreignKey="fk_bookauthors__book" implied="false" onDeleteCascade="true" schema="library" table="bookauthors"/>
+            <child catalog="library_main" column="book_isbn" foreignKey="fk_digitalbook__book_isbn" implied="false" onDeleteCascade="true" schema="library" table="digitalbooks"/>
+            <child catalog="library_main" column="book_isbn" foreignKey="fk_physicalbook__book_isbn" implied="false" onDeleteCascade="true" schema="library" table="physicalbooks"/>
          </column>
          <column autoUpdated="false" defaultValue="null" digits="0" id="1" name="book_name" nullable="false" remarks="" size="2147483647" type="text" typeCode="12"/>
          <column autoUpdated="false" defaultValue="null" digits="0" id="2" name="book_publish_date" nullable="false" remarks="" size="13" type="date" typeCode="91"/>
          <column autoUpdated="false" defaultValue="null" digits="0" id="3" name="book_has_digital" nullable="false" remarks="" size="1" type="bool" typeCode="-7"/>
-         <column autoUpdated="false" defaultValue="null" digits="0" id="4" name="isbn" nullable="true" remarks="" size="2147483647" type="text" typeCode="12"/>
-         <primaryKey column="book_id" sequenceNumberInPK="1"/>
+         <primaryKey column="book_isbn" sequenceNumberInPK="1"/>
          <index name="pk_books" unique="true">
-            <column ascending="true" name="book_id"/>
+            <column ascending="true" name="book_isbn"/>
          </index>
       </table>
       <table catalog="library_main" name="digitalbookloans" remarks="" schema="library" type="TABLE">
-         <column autoUpdated="false" defaultValue="null" digits="0" id="0" name="book_id" nullable="false" remarks="" size="10" type="int4" typeCode="4">
-            <parent catalog="library_main" column="book_id" foreignKey="fk_digitalbookloans__book" implied="false" onDeleteCascade="true" schema="library" table="digitalbooks"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="0" name="book_isbn" nullable="false" remarks="" size="2147483647" type="text" typeCode="12">
+            <parent catalog="library_main" column="book_isbn" foreignKey="fk_digitalbookloans__book" implied="false" onDeleteCascade="false" schema="library" table="digitalbooks"/>
          </column>
          <column autoUpdated="false" defaultValue="null" digits="0" id="1" name="user_id" nullable="false" remarks="" size="10" type="int4" typeCode="4">
-            <parent catalog="library_main" column="user_id" foreignKey="fk_digitalbookloans__user" implied="false" onDeleteCascade="true" schema="library" table="users"/>
+            <parent catalog="library_main" column="user_id" foreignKey="fk_digitalbookloans__user" implied="false" onDeleteCascade="false" schema="library" table="users"/>
          </column>
          <column autoUpdated="false" defaultValue="null" digits="6" id="2" name="loan_date" nullable="false" remarks="" size="35" type="timestamptz" typeCode="93"/>
          <column autoUpdated="false" defaultValue="null" digits="6" id="3" name="loan_expiry" nullable="true" remarks="" size="35" type="timestamptz" typeCode="93"/>
-         <primaryKey column="book_id" sequenceNumberInPK="1"/>
+         <primaryKey column="book_isbn" sequenceNumberInPK="1"/>
          <primaryKey column="user_id" sequenceNumberInPK="2"/>
          <primaryKey column="loan_date" sequenceNumberInPK="3"/>
          <index name="pk_digitalbookloans" unique="true">
-            <column ascending="true" name="book_id"/>
+            <column ascending="true" name="book_isbn"/>
             <column ascending="true" name="user_id"/>
             <column ascending="true" name="loan_date"/>
          </index>
          <checkConstraint constraint="(loan_date &lt; loan_expiry)" name="chk_digitalbookloans__valid_expiry"/>
       </table>
       <table catalog="library_main" name="digitalbooks" remarks="" schema="library" type="TABLE">
-         <column autoUpdated="false" defaultValue="null" digits="0" id="0" name="book_id" nullable="false" remarks="" size="10" type="int4" typeCode="4">
-            <child catalog="library_main" column="book_id" foreignKey="fk_digitalbookloans__book" implied="false" onDeleteCascade="true" schema="library" table="digitalbookloans"/>
-            <parent catalog="library_main" column="book_id" foreignKey="fk_digitalbook__book_id" implied="false" onDeleteCascade="true" schema="library" table="books"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="0" name="book_isbn" nullable="false" remarks="" size="2147483647" type="text" typeCode="12">
+            <child catalog="library_main" column="book_isbn" foreignKey="fk_digitalbookloans__book" implied="false" onDeleteCascade="false" schema="library" table="digitalbookloans"/>
+            <parent catalog="library_main" column="book_isbn" foreignKey="fk_digitalbook__book_isbn" implied="false" onDeleteCascade="true" schema="library" table="books"/>
          </column>
-         <column autoUpdated="false" defaultValue="null" digits="0" id="1" name="book_url" nullable="false" remarks="" size="2147483647" type="text" typeCode="12"/>
-         <primaryKey column="book_id" sequenceNumberInPK="1"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="1" name="book_url" nullable="true" remarks="" size="2147483647" type="text" typeCode="12"/>
+         <primaryKey column="book_isbn" sequenceNumberInPK="1"/>
          <index name="pk_digitalbooks" unique="true">
-            <column ascending="true" name="book_id"/>
+            <column ascending="true" name="book_isbn"/>
          </index>
       </table>
       <table catalog="library_main" name="physicalbookloans" remarks="" schema="library" type="TABLE">
-         <column autoUpdated="false" defaultValue="null" digits="0" id="0" name="book_id" nullable="false" remarks="" size="10" type="int4" typeCode="4">
-            <parent catalog="library_main" column="book_id" foreignKey="fk_physicalbookloans__book" implied="false" onDeleteCascade="false" schema="library" table="physicalbooks"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="0" name="book_isbn" nullable="false" remarks="" size="2147483647" type="text" typeCode="12">
+            <parent catalog="library_main" column="book_isbn" foreignKey="fk_physicalbookloans__book" implied="false" onDeleteCascade="false" schema="library" table="physicalbooks"/>
          </column>
          <column autoUpdated="false" defaultValue="null" digits="0" id="1" name="user_id" nullable="false" remarks="" size="10" type="int4" typeCode="4">
             <parent catalog="library_main" column="user_id" foreignKey="fk_physicalbookloans__user" implied="false" onDeleteCascade="false" schema="library" table="users"/>
@@ -81,31 +80,31 @@
          <column autoUpdated="false" defaultValue="null" digits="6" id="2" name="loan_date" nullable="false" remarks="" size="35" type="timestamptz" typeCode="93"/>
          <column autoUpdated="false" defaultValue="null" digits="6" id="3" name="loan_return_date" nullable="true" remarks="" size="35" type="timestamptz" typeCode="93"/>
          <column autoUpdated="false" defaultValue="false" digits="0" id="4" name="loan_returned" nullable="false" remarks="" size="1" type="bool" typeCode="-7"/>
-         <primaryKey column="book_id" sequenceNumberInPK="1"/>
+         <primaryKey column="book_isbn" sequenceNumberInPK="1"/>
          <primaryKey column="user_id" sequenceNumberInPK="2"/>
          <primaryKey column="loan_date" sequenceNumberInPK="3"/>
          <index name="pk_physicalbookloan" unique="true">
-            <column ascending="true" name="book_id"/>
+            <column ascending="true" name="book_isbn"/>
             <column ascending="true" name="user_id"/>
             <column ascending="true" name="loan_date"/>
          </index>
          <checkConstraint constraint="(loan_date &lt; loan_return_date)" name="chk_physicalbookloans__valid_dates"/>
       </table>
       <table catalog="library_main" name="physicalbooks" remarks="" schema="library" type="TABLE">
-         <column autoUpdated="false" defaultValue="null" digits="0" id="0" name="book_id" nullable="false" remarks="" size="10" type="int4" typeCode="4">
-            <child catalog="library_main" column="book_id" foreignKey="fk_physicalbookloans__book" implied="false" onDeleteCascade="false" schema="library" table="physicalbookloans"/>
-            <parent catalog="library_main" column="book_id" foreignKey="fk_physicalbook__book_id" implied="false" onDeleteCascade="true" schema="library" table="books"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="0" name="book_isbn" nullable="false" remarks="" size="2147483647" type="text" typeCode="12">
+            <child catalog="library_main" column="book_isbn" foreignKey="fk_physicalbookloans__book" implied="false" onDeleteCascade="false" schema="library" table="physicalbookloans"/>
+            <parent catalog="library_main" column="book_isbn" foreignKey="fk_physicalbook__book_isbn" implied="false" onDeleteCascade="true" schema="library" table="books"/>
          </column>
          <column autoUpdated="false" defaultValue="null" digits="0" id="1" name="book_quantity" nullable="false" remarks="" size="10" type="int4" typeCode="4"/>
-         <primaryKey column="book_id" sequenceNumberInPK="1"/>
+         <primaryKey column="book_isbn" sequenceNumberInPK="1"/>
          <index name="pk_physicalbooks" unique="true">
-            <column ascending="true" name="book_id"/>
+            <column ascending="true" name="book_isbn"/>
          </index>
          <checkConstraint constraint="(book_quantity &gt;= 0)" name="chk_physicalbook__valid_quantity"/>
       </table>
       <table catalog="library_main" name="users" remarks="" schema="library" type="TABLE">
          <column autoUpdated="true" defaultValue="null" digits="0" id="0" name="user_id" nullable="false" remarks="" size="10" type="int4" typeCode="4">
-            <child catalog="library_main" column="user_id" foreignKey="fk_digitalbookloans__user" implied="false" onDeleteCascade="true" schema="library" table="digitalbookloans"/>
+            <child catalog="library_main" column="user_id" foreignKey="fk_digitalbookloans__user" implied="false" onDeleteCascade="false" schema="library" table="digitalbookloans"/>
             <child catalog="library_main" column="user_id" foreignKey="fk_physicalbookloans__user" implied="false" onDeleteCascade="false" schema="library" table="physicalbookloans"/>
          </column>
          <column autoUpdated="false" defaultValue="null" digits="0" id="1" name="email" nullable="false" remarks="" size="2147483647" type="text" typeCode="12"/>

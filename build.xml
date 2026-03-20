@@ -2,6 +2,7 @@
 <project name="LibraryManagement" default="run">
   <property name="src.dir" value="src/com" />
   <property name="build.dir" value="bin/" />
+  <property name="sql_test.dir" value="sql-test/" />
   <property name="main.class"
     value="com.unazed.LibraryManagement.LibraryManagement" />
   <property name="fx.path" value="lib/javafx-sdk-25.0.2/lib" />
@@ -73,5 +74,16 @@
       <arg value="revert" />
     </exec>
   </target>
+
+  <target name="sql-test" depends="sql-deploy">
+    <exec executable="pg_prove" failonerror="true">
+      <arg value="--ext" />
+      <arg value=".sql" />
+      <arg value="-r" />
+      <arg value="${sql_test.dir}" />
+    </exec>
+  </target>
+
+  <target name="sql" depends="sql-revert, sql-deploy, sql-test" />
 
 </project>

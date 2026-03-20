@@ -1,4 +1,4 @@
--- Deploy library:loan to pg
+﻿-- Deploy library:loan to pg
 
 BEGIN;
 
@@ -32,22 +32,26 @@ BEGIN;
   );
 
   CREATE TABLE library.PhysicalBookLoans (
+    loan_id		INTEGER GENERATED ALWAYS AS IDENTITY,
     book_isbn		TEXT NOT NULL,
     user_id		INTEGER NOT NULL,
+    loan_qty            INTEGER NOT NULL,
 
     loan_date		TIMESTAMPTZ NOT NULL,
     loan_return_date	TIMESTAMPTZ,  -- NULL = no return date
     loan_returned	BOOLEAN DEFAULT FALSE NOT NULL,
 
     CONSTRAINT PK_PhysicalBookLoan
-      PRIMARY KEY (book_isbn, user_id, loan_date),
+      PRIMARY KEY (loan_id),
 
     CONSTRAINT FK_PhysicalBookLoans__book
       FOREIGN KEY (book_isbn)
-      REFERENCES library.PhysicalBooks(book_isbn),
+      REFERENCES library.PhysicalBooks(book_isbn)
+      ON DELETE RESTRICT,
     CONSTRAINT FK_PhysicalBookLoans__user
       FOREIGN KEY (user_id)
-      REFERENCES library.Users(user_id),
+      REFERENCES library.Users(user_id)
+      ON DELETE RESTRICT,
   
     CONSTRAINT CHK_PhysicalBookLoans__valid_dates
       CHECK (loan_date < loan_return_date)

@@ -109,26 +109,26 @@
                                 </thead>
                                 <tbody>
                                 <tr>
-                                    <td class='primaryKey' title='Primary Key'><i class='icon ion-key iconkey' style='padding-left: 5px;'></i><span id="book_id">book_id</span></td>
-                                    <td>int4</td>
-                                    <td>10</td>
+                                    <td class='primaryKey' title='Primary Key'><i class='icon ion-key iconkey' style='padding-left: 5px;'></i><span id="book_isbn">book_isbn</span></td>
+                                    <td>text</td>
+                                    <td>2147483647</td>
                                     <td title=''></td>
                                     <td title=''></td>
                                     <td>null</td>
                                     <td>
                                         <table border='0' cellspacing='0' cellpadding='0'>
                                             <tr>
-                                                <td title="digitalbookloans.book_id references digitalbooks.book_id via fk_digitalbookloans__book"><a href='digitalbookloans.html'>digitalbookloans</a><span class='relatedKey'>.book_id</span></td>
+                                                <td title="digitalbookloans.book_isbn references digitalbooks.book_isbn via fk_digitalbookloans__book"><a href='digitalbookloans.html'>digitalbookloans</a><span class='relatedKey'>.book_isbn</span></td>
                                                 <td class="constraint detail">fk_digitalbookloans__book</td>
-                                                <td class="constraint detail"><span title='Cascade on delete:&#10;Deletion of parent deletes child'>C</span></td>
+                                                <td class="constraint detail"><span title='Restrict delete:&#10;Parent cannot be deleted if children exist'>R</span></td>
                                             </tr>
                                         </table>
                                     </td>
                                     <td>
                                         <table border='0' cellspacing='0' cellpadding='0'>
                                             <tr>
-                                                <td title="digitalbooks.book_id references books.book_id via fk_digitalbook__book_id"><a href='books.html'>books</a><span class='relatedKey'>.book_id</span></td>
-                                                <td class="constraint detail">fk_digitalbook__book_id</td>
+                                                <td title="digitalbooks.book_isbn references books.book_isbn via fk_digitalbook__book_isbn"><a href='books.html'>books</a><span class='relatedKey'>.book_isbn</span></td>
+                                                <td class="constraint detail">fk_digitalbook__book_isbn</td>
                                                 <td class="constraint detail"><span title='Cascade on delete:&#10;Deletion of parent deletes child'>C</span></td>
                                             </tr>
                                         </table>
@@ -139,7 +139,7 @@
                                     <td><span id="book_url">book_url</span></td>
                                     <td>text</td>
                                     <td>2147483647</td>
-                                    <td title=''></td>
+                                    <td title='nullable'>√</td>
                                     <td title=''></td>
                                     <td>null</td>
                                     <td>
@@ -186,7 +186,7 @@
                                     <td class='primaryKey' title='Primary Key'><i class='icon ion-key iconkey'></i> pk_digitalbooks</td>
                                     <td>Primary key</td>
                                     <td><span title='Ascending'>Asc</span></td>
-                                    <td>book_id</td>
+                                    <td>book_isbn</td>
                                 </tr>
                                 </tbody>
                             </table>
