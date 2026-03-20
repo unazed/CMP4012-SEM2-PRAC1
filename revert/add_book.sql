@@ -16,5 +16,7 @@ BEGIN;
   DROP FUNCTION library_internal.is_physical_book;
   DROP FUNCTION library_internal.exists_book_by_isbn;
   DROP FUNCTION library_internal.get_user_role;
+  DROP FUNCTION library_internal.is_active_physical_loan;
+  DROP FUNCTION library_internal.is_active_digital_loan;
 
 COMMIT;

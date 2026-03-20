@@ -1,2 +1,7 @@
 lib/javafx-sdk-25.0.2/
 bin/
+.env
+.project
+.gitmodules
+postgres-language-server.jsonc
+.classpath

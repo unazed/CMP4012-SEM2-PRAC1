@@ -137,6 +137,26 @@ BEGIN;
         p_isbn, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP)
   $$ LANGUAGE sql STABLE;
 
+  CREATE FUNCTION library_internal.is_active_physical_loan(p_loan_id INTEGER)
+    RETURNS BOOLEAN AS $$
+      SELECT EXISTS (
+        SELECT FROM library.PhysicalBookLoans
+        WHERE loan_id = p_loan_id
+          AND NOT loan_returned
+          AND (loan_return_date IS NULL OR loan_return_date > NOW())
+      );
+  $$ LANGUAGE sql STABLE;
+
+  CREATE FUNCTION library_internal.is_active_digital_loan(p_loan_id INTEGER)
+    RETURNS BOOLEAN AS $$
+      SELECT EXISTS (
+        SELECT FROM library.DigitalBookLoans
+        WHERE loan_id = p_loan_id
+          AND loan_date <= CURRENT_DATE
+          AND (loan_expiry IS NULL OR CURRENT_DATE <= loan_expiry)
+      );
+  $$ LANGUAGE sql STABLE;
+
   CREATE FUNCTION library_internal.has_active_physical_loans(p_isbn TEXT)
     RETURNS BOOLEAN AS $$
       SELECT EXISTS (
