@@ -6,7 +6,8 @@
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.text.Font?>
 
-<HBox xmlns="http://javafx.com/javafx/26" xmlns:fx="http://javafx.com/fxml/1"
+<HBox xmlns="http://javafx.com/javafx/25.0.2"
+    xmlns:fx="http://javafx.com/fxml/1"
     fx:controller="com.unazed.LibraryManagement.controller.StatusMenuController"
     id="HBox" alignment="CENTER_LEFT" spacing="5.0">
   <children>

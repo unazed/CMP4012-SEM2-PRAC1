@@ -4,7 +4,8 @@
 <?import javafx.scene.control.MenuBar?>
 <?import javafx.scene.control.MenuItem?>
 
-<MenuBar xmlns="http://javafx.com/javafx/26" xmlns:fx="http://javafx.com/fxml/1"
+<MenuBar xmlns="http://javafx.com/javafx/25.0.2"
+    xmlns:fx="http://javafx.com/fxml/1"
     fx:controller="com.unazed.LibraryManagement.controller.AuthMenuController">
   <menus>
     <Menu mnemonicParsing="false" text="View">

@@ -1,5 +1,7 @@
 package com.unazed.LibraryManagement.controller;
 
+import com.unazed.LibraryManagement.View;
+
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.PasswordField;
@@ -12,6 +14,8 @@ public class RegisterController
   @FXML private PasswordField tfRegisterPassword;
   @FXML private PasswordField tfRegisterConfirmPassword;
   @FXML private Button btnRegister;
+
+  public static final View VIEW = View.REGISTER;
 
   @FXML
   public void initialize()

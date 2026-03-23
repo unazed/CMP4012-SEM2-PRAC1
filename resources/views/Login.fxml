@@ -12,7 +12,7 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane xmlns="http://javafx.com/javafx/26"
+<AnchorPane xmlns="http://javafx.com/javafx/25.0.2"
     xmlns:fx="http://javafx.com/fxml/1" prefHeight="578.0" prefWidth="504.0"
     fx:controller="com.unazed.LibraryManagement.controller.LoginController">
   <children>
@@ -58,7 +58,8 @@
             </GridPane>
           </children>
         </HBox>
-        <Button fx:id="btnLogin" mnemonicParsing="false" text="Login">
+        <Button fx:id="btnLogin" mnemonicParsing="false" text="Login"
+            onAction="#onLoginClick">
           <VBox.margin>
           <Insets top="10.0" />
           </VBox.margin>

@@ -14,6 +14,7 @@ public class EventBus
     return INSTANCE;
   }
 
+  @SuppressWarnings("unchecked")
   public <T> void subscribe(Class<T> event, Consumer<T> listener)
   {
     listeners

@@ -16,24 +16,24 @@ public class AuthMenuController
   @FXML
   private void onViewLogin()
   {
-    EventBus.get().publish(new Events.ViewSwitchEvent("Login"));
+    EventBus.get().publish(new Events.ViewSwitchEvent(LoginController.VIEW));
   }
 
   @FXML
   private void onViewRegister()
   {
-    EventBus.get().publish(new Events.ViewSwitchEvent("Register"));
+    EventBus.get().publish(new Events.ViewSwitchEvent(RegisterController.VIEW));
   }
 
   @FXML
   private void onPreferencesConfigDb()
   {
-    EventBus.get().publish(new Events.ViewSwitchEvent("ConfigDb"));
+    EventBus.get().publish(new Events.ViewSwitchEvent(ConfigDbController.VIEW));
   }
 
   @FXML
   private void onHelpAbout()
   {
-    EventBus.get().publish(new Events.ViewSwitchEvent("About"));
+    EventBus.get().publish(new Events.ViewSwitchEvent(AboutController.VIEW));
   }
 }

@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
 <project name="LibraryManagement" default="run">
-  <property name="src.dir" value="src/com" />
+  <property name="src.dir" value="src/com/" />
   <property name="build.dir" value="bin/" />
   <property name="resources.dir" value="resources/" />
   <property name="sql_test.dir" value="sql-test/" />
@@ -8,6 +8,7 @@
     value="com.unazed.LibraryManagement.LibraryManagement" />
   <property name="fx.path" value="lib/javafx-sdk-25.0.2/lib" />
   <property name="pg.jar" value="lib/postgresql-42.7.10.jar" />
+  <property name="gson.jar" value="lib/gson-2.11.0.jar" />
 
   <target name="build">
     <mkdir dir="${build.dir}" />
@@ -19,6 +20,10 @@
       <compilerarg value="--add-modules=javafx.controls,javafx.fxml" />
       <src path="${src.dir}" />
       <include name="**/*.java" />
+      <classpath>
+        <pathelement path="${pg.jar}" />
+        <pathelement path="${gson.jar}" />
+      </classpath>
     </javac>
     <copy todir="${build.dir}">
       <fileset dir="${resources.dir}" />
@@ -34,6 +39,7 @@
       <classpath>
         <pathelement path="${build.dir}" />
         <pathelement path="${pg.jar}" />
+        <pathelement path="${gson.jar}" />
       </classpath>
     </java>
   </target>

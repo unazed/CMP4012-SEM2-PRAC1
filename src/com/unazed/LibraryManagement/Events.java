@@ -6,14 +6,14 @@ public class Events
 {
   public static class ViewSwitchEvent
   {
-    private final String view;
+    private final View view;
 
-    public ViewSwitchEvent(String view)
+    public ViewSwitchEvent(View view)
     {
       this.view = view;
     }
 
-    public String getView()
+    public View getView()
     {
       return view;
     }
