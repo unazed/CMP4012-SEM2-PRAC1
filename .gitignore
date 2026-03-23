@@ -1,4 +1,5 @@
 lib/javafx-sdk-25.0.2/
+lib/scene-builder/
 bin/
 .env
 .project
