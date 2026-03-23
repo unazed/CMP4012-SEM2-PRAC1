@@ -7,3 +7,6 @@
 [submodule "lib/pgtap"]
 	path = lib/pgtap
 	url = https://github.com/theory/pgtap
+[submodule "lib/scenebuilder"]
+	path = lib/scenebuilder
+	url = https://github.com/gluonhq/scenebuilder
