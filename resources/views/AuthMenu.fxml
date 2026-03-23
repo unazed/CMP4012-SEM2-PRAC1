@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Menu?>
+<?import javafx.scene.control.MenuBar?>
+<?import javafx.scene.control.MenuItem?>
+
+<MenuBar xmlns="http://javafx.com/javafx/26" xmlns:fx="http://javafx.com/fxml/1"
+    fx:controller="com.unazed.LibraryManagement.controller.AuthMenuController">
+  <menus>
+    <Menu mnemonicParsing="false" text="View">
+      <items>
+        <MenuItem fx:id="miViewRegister" mnemonicParsing="false"
+            text="Register" onAction="#onViewRegister" />
+        <MenuItem fx:id="miViewLogin" mnemonicParsing="false"
+            text="Login" onAction="#onViewLogin" />
+      </items>
+    </Menu>
+      <Menu mnemonicParsing="false" text="Preferences">
+          <items>
+            <MenuItem fx:id="miPreferencesConfigDb" mnemonicParsing="false"
+              text="Configure database" onAction="#onPreferencesConfigDb" />
+          </items>
+      </Menu>
+    <Menu mnemonicParsing="false" text="Help">
+      <items>
+        <MenuItem fx:id="miHelpAbout" mnemonicParsing="false" text="About"
+            onAction="#onHelpAbout" />
+      </items>
+    </Menu>
+  </menus>
+</MenuBar>

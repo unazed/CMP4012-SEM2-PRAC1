@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.Cursor?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.PasswordField?>
+<?import javafx.scene.control.SplitPane?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Pane?>
+<?import javafx.scene.layout.RowConstraints?>
+<?import javafx.scene.layout.StackPane?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.paint.Color?>
+<?import javafx.scene.text.Font?>
+
+<VBox prefHeight="600.0" prefWidth="900.0"
+    fx:controller="com.unazed.LibraryManagement.controller.MainController"
+    xmlns="http://javafx.com/javafx/26" xmlns:fx="http://javafx.com/fxml/1">
+  <children>
+    <fx:include source="AuthMenu.fxml" fx:id="authMenu" />
+    <SplitPane dividerPositions="0.25, 0.75" focusTraversable="true"
+        prefHeight="-1.0" prefWidth="-1.0" VBox.vgrow="ALWAYS">
+      <items>
+        <AnchorPane style="-fx-background-color: lightgrey;" />
+        <StackPane fx:id="contentPane" />
+        <AnchorPane style="-fx-background-color: lightgrey;" />
+      </items>
+         <cursor>
+            <Cursor fx:constant="DEFAULT" />
+         </cursor>
+    </SplitPane>
+    <fx:include source="StatusMenu.fxml" fx:id="statusMenu" />
+  </children>
+</VBox>

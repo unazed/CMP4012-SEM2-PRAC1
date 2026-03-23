@@ -21,7 +21,7 @@ public final class SqlInterface
     } catch (SQLException sqlExc)
     {
       logger.log(Level.SEVERE,
-	"Failed to connect to SQL server: " + sqlExc.getMessage());
+        "Failed to connect to SQL server: " + sqlExc.getMessage());
       throw sqlExc;
     }
   }
@@ -36,7 +36,26 @@ public final class SqlInterface
     } catch (SQLException sqlExc)
     {
       logger.log(Level.SEVERE,
-	"Failed to connect to SQL server: " + sqlExc.getMessage());
+	      "Failed to connect to SQL server: " + sqlExc.getMessage());
+      throw sqlExc;
+    }
+  }
+
+  /* call library_api.register(email, username, password) */
+  public void register(String email, String username, String password)
+    throws SQLException
+  {
+    try (CallableStatement stmt = conn.prepareCall(
+      "{call library_api.register(?, ?, ?)}"))
+    {
+      stmt.setString(1, email);
+      stmt.setString(2, username);
+      stmt.setString(3, password);
+      stmt.execute();
+    } catch (SQLException sqlExc)
+    {
+      logger.log(Level.SEVERE,
+        "Failed to register user: " + sqlExc.getMessage());
       throw sqlExc;
     }
   }

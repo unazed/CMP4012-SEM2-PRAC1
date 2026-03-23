@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.layout.Pane?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.text.Font?>
+
+<HBox xmlns="http://javafx.com/javafx/26" xmlns:fx="http://javafx.com/fxml/1"
+    fx:controller="com.unazed.LibraryManagement.controller.StatusMenuController"
+    id="HBox" alignment="CENTER_LEFT" spacing="5.0">
+  <children>
+    <Label maxHeight="1.7976931348623157E308" maxWidth="-1.0"
+        text="M. Taujanskas, 2026" HBox.hgrow="ALWAYS"
+        style="-fx-font-size: 11px; -fx-text-fill: #9f9f9f;"/>
+    <Pane prefHeight="-1.0" prefWidth="-1.0" HBox.hgrow="ALWAYS" />
+    <Label fx:id="labelStatus" maxWidth="-1.0" text=""
+        style="-fx-font-size: 11px; -fx-text-fill: #616161;"
+        HBox.hgrow="NEVER" />
+  </children>
+  <padding>
+    <Insets bottom="3.0" left="3.0" right="3.0" top="3.0" />
+  </padding>
+</HBox>

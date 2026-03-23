@@ -2,6 +2,7 @@
 <project name="LibraryManagement" default="run">
   <property name="src.dir" value="src/com" />
   <property name="build.dir" value="bin/" />
+  <property name="resources.dir" value="resources/" />
   <property name="sql_test.dir" value="sql-test/" />
   <property name="main.class"
     value="com.unazed.LibraryManagement.LibraryManagement" />
@@ -15,10 +16,13 @@
     <javac destdir="${build.dir}" includeantruntime="false">
       <compilerarg value="--module-path" />
       <compilerarg value="${fx.path}" />
-      <compilerarg value="--add-modules=javafx.controls" />
+      <compilerarg value="--add-modules=javafx.controls,javafx.fxml" />
       <src path="${src.dir}" />
       <include name="**/*.java" />
     </javac>
+    <copy todir="${build.dir}">
+      <fileset dir="${resources.dir}" />
+    </copy>
   </target>
 
   <target name="run" depends="build">
@@ -26,10 +30,10 @@
       <jvmarg value="--module-path" />
       <jvmarg value="${fx.path}" />
       <jvmarg value="--enable-native-access=javafx.graphics" />
-      <jvmarg value="--add-modules=javafx.controls" />
+      <jvmarg value="--add-modules=javafx.controls,javafx.fxml" />
       <classpath>
-	<pathelement path="${build.dir}" />
-	<pathelement path="${pg.jar}" />
+        <pathelement path="${build.dir}" />
+        <pathelement path="${pg.jar}" />
       </classpath>
     </java>
   </target>
