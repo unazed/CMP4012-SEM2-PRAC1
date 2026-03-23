@@ -6,12 +6,12 @@ import java.util.logging.Logger;
 
 public enum View
 {
-  LOGIN("Login"),
+  LOGIN("Login"), AUTH_MENU("AuthMenu"),
   MAIN("Main"),
   REGISTER("Register"),
   CONFIG_DB("ConfigDb"),
   ABOUT("About"),
-  DASHBOARD("Dashboard");
+  DASHBOARD("Dashboard"), APP_MENU("AppMenu");
 
   private static final Logger logger = Logger.getLogger(View.class.getName());
   private final String viewName;

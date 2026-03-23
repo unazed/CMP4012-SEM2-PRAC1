@@ -22,7 +22,7 @@
     fx:controller="com.unazed.LibraryManagement.controller.MainController"
     xmlns="http://javafx.com/javafx/25.0.2" xmlns:fx="http://javafx.com/fxml/1">
   <children>
-    <fx:include source="AuthMenu.fxml" fx:id="authMenu" />
+    <StackPane fx:id="menuPane" />
     <SplitPane dividerPositions="0.25, 0.75" focusTraversable="true"
         prefHeight="-1.0" prefWidth="-1.0" VBox.vgrow="ALWAYS"
         fx:id="mainSplitPane">

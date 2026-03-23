@@ -13,6 +13,11 @@ BEGIN;
     m_user_role   library.user_role;
     m_username 	  TEXT;
   BEGIN
+    IF p_email NOT LIKE '%@%.%' THEN
+      RETURN library_internal.make_error_result(
+        'malformed_credentials'::library_internal.auth_error_code);
+    END IF;
+    
     m_email := library_internal.normalize_email(p_email);
 
     SELECT user_id, username, password_hash, user_status, user_role

@@ -7,5 +7,6 @@ BEGIN;
   REVOKE ALL ON SCHEMA library FROM app_user;
   GRANT USAGE ON SCHEMA library_api TO app_user;
   GRANT EXECUTE ON ALL PROCEDURES IN SCHEMA library_api TO app_user;
+  GRANT EXECUTE ON ALL FUNCTIONS IN SCHEMA library_api TO app_user;
 
 COMMIT;

@@ -56,6 +56,11 @@ BEGIN;
     m_token 	  TEXT;
     m_email	    TEXT;
   BEGIN
+    IF p_email NOT LIKE '%@%.%' THEN
+      RETURN library_internal.make_error_result(
+        'malformed_credentials'::library_internal.auth_error_code);
+    END IF;
+    
     m_email = library_internal.normalize_email(p_email);
     m_pwd_hash := crypt(p_password, gen_salt('bf', 8));
 

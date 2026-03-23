@@ -22,6 +22,7 @@ BEGIN;
   CREATE TYPE library_internal.auth_error_code AS ENUM (
     'user_exists',
     'login_invalid',
+    'malformed_credentials',
     'account_disabled',
     'token_invalid',
     'insufficient_permissions'

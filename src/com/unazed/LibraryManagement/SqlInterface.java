@@ -11,7 +11,7 @@ public class SqlInterface
 {
   private static final Logger logger = Logger.getLogger(
     SqlInterface.class.getName());
-  private static SqlInterface instance;
+  private static SqlInterface INSTANCE = null;
   private Connection conn;
 
   private SqlInterface(String url)
@@ -30,16 +30,17 @@ public class SqlInterface
 
   public static SqlInterface newInstance(String url) throws SQLException
   {
-    if (instance != null)
+    if (INSTANCE != null)
       throw new IllegalStateException("SqlInterface instance already exists");
-    return new SqlInterface(url);
+    INSTANCE = new SqlInterface(url);
+    return INSTANCE;
   }
 
   public static SqlInterface get()
   {
-    if (instance == null)
+    if (INSTANCE == null)
       throw new IllegalStateException("SqlInterface instance not initialized");
-    return instance;
+    return INSTANCE;
   }
 
   public SqlInterface(String url, Properties props)
@@ -59,51 +60,39 @@ public class SqlInterface
   public SqlApiResult<User> register(
     String email, String username, String password) throws SQLException
   {
-    CallableStatement stmt;
-    try
+    try (PreparedStatement stmt = conn.prepareCall(
+      "SELECT * FROM library_api.register_user(?, ?, ?)");)
     {
-      stmt = conn.prepareCall("{call library_api.register(?, ?, ?)}");
       stmt.setString(1, email);
       stmt.setString(2, username);
       stmt.setString(3, password);
-      stmt.execute();
+      ResultSet rs = stmt.executeQuery();
+      if (!rs.next())
+        throw new SQLException("No result returned");
+      return SqlApiResult.fromResultSet(rs, User.class);
     } catch (SQLException sqlExc)
     {
       logger.log(Level.SEVERE, "Failed to register user:", sqlExc);
       throw sqlExc;
     }
-
-    boolean success = stmt.getBoolean("success");
-    String errorCode = stmt.getString("error_code");
-    if (!success)
-      return new SqlApiResult<>(false, errorCode, null);
-    
-    return new SqlApiResult<>(
-      true, null, User.fromJson(stmt.getString("data")));
   }
 
   public SqlApiResult<User> login(
     String email, String password) throws SQLException
   {
-    CallableStatement stmt;
-    try
+    try (PreparedStatement stmt = conn.prepareCall(
+      "SELECT * FROM library_api.login_user(?, ?)");)
     {
-      stmt = conn.prepareCall("{call library_api.login(?, ?)}");
       stmt.setString(1, email);
       stmt.setString(2, password);
-      stmt.execute();
+      ResultSet rs = stmt.executeQuery();
+      if (!rs.next())
+        throw new SQLException("No result returned");
+      return SqlApiResult.fromResultSet(rs, User.class);
     } catch (SQLException sqlExc)
     {
       logger.log(Level.SEVERE, "Failed to log in user:", sqlExc);
       throw sqlExc;
     }
-
-    boolean success = stmt.getBoolean("success");
-    String errorCode = stmt.getString("error_code");
-    if (!success)
-      return new SqlApiResult<>(false, errorCode, null);
-    
-    return new SqlApiResult<>(
-      true, null, User.fromJson(stmt.getString("data")));
   }
 }

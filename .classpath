@@ -7,5 +7,6 @@
 	<classpathentry kind="lib" path="lib/javafx-sdk-25.0.2/lib/javafx.graphics.jar"/>
 	<classpathentry kind="lib" path="lib/javafx-sdk-25.0.2/lib/javafx.base.jar"/>
   <classpathentry kind="lib" path="lib/gson-2.11.0.jar"/>
+  <classpathentry kind="lib" path="lib/postgresql-42.7.10.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

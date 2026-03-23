@@ -2,6 +2,7 @@ package com.unazed.LibraryManagement.controller;
 
 import com.unazed.LibraryManagement.EventBus;
 import com.unazed.LibraryManagement.Events;
+import com.unazed.LibraryManagement.View;
 
 import javafx.fxml.FXML;
 import javafx.scene.control.MenuItem;
@@ -12,6 +13,8 @@ public class AuthMenuController
   @FXML private MenuItem miViewLogin;
   @FXML private MenuItem miPreferencesConfigDb;
   @FXML private MenuItem miHelpAbout;
+
+  public static final View VIEW = View.AUTH_MENU;
 
   @FXML
   private void onViewLogin()

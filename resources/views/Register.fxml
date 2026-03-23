@@ -74,7 +74,8 @@
             </GridPane>
           </children>
         </HBox>
-        <Button fx:id="btnRegister" mnemonicParsing="false" text="Register">
+        <Button fx:id="btnRegister" mnemonicParsing="false" text="Register"
+            onAction="#onRegisterClick">
           <VBox.margin>
             <Insets top="10.0" />
           </VBox.margin>
