@@ -86,4 +86,9 @@ public class Events
       return type;
     }
   }
+
+  public static class UserSignoutEvent
+  {
+    public UserSignoutEvent() {}
+  }
 }

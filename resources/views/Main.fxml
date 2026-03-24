@@ -26,14 +26,9 @@
     <SplitPane dividerPositions="0.25, 0.75" focusTraversable="true"
         prefHeight="-1.0" prefWidth="-1.0" VBox.vgrow="ALWAYS"
         fx:id="mainSplitPane">
-      <items>
-        <AnchorPane style="-fx-background-color: lightgrey;" />
-        <StackPane fx:id="contentPane" />
-        <AnchorPane style="-fx-background-color: lightgrey;" />
-      </items>
-         <cursor>
-            <Cursor fx:constant="DEFAULT" />
-         </cursor>
+      <cursor>
+        <Cursor fx:constant="DEFAULT" />
+      </cursor>
     </SplitPane>
     <fx:include source="StatusMenu.fxml" fx:id="statusMenu" />
   </children>

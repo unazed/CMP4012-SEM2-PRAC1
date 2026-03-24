@@ -11,6 +11,7 @@ import java.io.IOException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import javafx.event.Event;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -27,41 +28,54 @@ public class MainController
 
   private static final java.util.logging.Logger logger
     = Logger.getLogger(MainController.class.getName());
-  private User authenticatedUser;
   public static final View VIEW = View.MAIN;
+
+  private User authenticatedUser;
+  private EventBus eventBus = EventBus.get();
 
   @FXML
   public void initialize()
   {
-    EventBus bus = EventBus.get();
-
-    bus.subscribe(Events.ViewSwitchEvent.class, e -> switchTo(e.getView()));
-
-    bus.subscribe(
-      Events.UserAuthenticatedEvent.class,
-      e -> {
-        if (authenticatedUser != null)
-          throw new IllegalStateException("User is already authenticated");
-        authenticatedUser = e.getUser();
-        switchTo(DashboardController.VIEW);
-      }
-    );
-
-    bus.subscribe(
-      Events.AlertEvent.class,
-      e -> {
-        Alert alert = new Alert(AlertType.ERROR);
-        alert.setTitle(e.getTitle());
-        alert.setHeaderText(e.getHeader());
-        alert.setContentText(e.getContent());
-        alert.showAndWait();
-      }
-    );
+    eventBus.subscribe(
+      Events.ViewSwitchEvent.class, e -> switchTo(e.getView()));
+    eventBus.subscribe(
+      Events.UserAuthenticatedEvent.class, this::userAuthenticatedEventHandler);
+    eventBus.subscribe(Events.AlertEvent.class, this::alertEventHandler);
+    eventBus.subscribe(
+      Events.UserSignoutEvent.class, this::userSignoutEventHandler);
 
     switchTo(LoginController.VIEW);
   }
 
-  /* change menu tab fx:id = AuthMenu to another file */
+  private void userSignoutEventHandler(Events.UserSignoutEvent event)
+  {
+    if (authenticatedUser == null)
+      throw new IllegalStateException("No user is currently authenticated");
+    logger.info("User signed out: " + authenticatedUser.getUsername());
+    eventBus.publish(new Events.StatusMessageEvent("Signed out successfully."));
+    authenticatedUser = null;
+    switchTo(LoginController.VIEW);
+  }
+
+  private void alertEventHandler(Events.AlertEvent event)
+  {
+    Alert alert = new Alert(event.getType());
+    alert.setTitle(event.getTitle());
+    alert.setHeaderText(event.getHeader());
+    alert.setContentText(event.getContent());
+    alert.showAndWait();
+  }
+
+  private void userAuthenticatedEventHandler(
+    Events.UserAuthenticatedEvent event)
+  {
+    if (authenticatedUser != null)
+      throw new IllegalStateException("User is already authenticated");
+    authenticatedUser = event.getUser();
+    switchTo(DashboardController.VIEW);
+    switchMenuTabTo(LoginController.VIEW);
+  }
+
   private void switchMenuTabTo(View view)
   {
     logger.info("Switching menu tab: " + view);
@@ -75,7 +89,7 @@ public class MainController
           menuPane.getChildren().setAll(menu);
         } catch (IOException ioExc)
         {
-          EventBus.get().publish(
+          eventBus.publish(
             new Events.AlertEvent(AlertType.ERROR, "resource.error"));
           throw new RuntimeException(ioExc);
         }
@@ -88,7 +102,7 @@ public class MainController
           menuPane.getChildren().setAll(menu);
         } catch (IOException ioExc)
         {
-          EventBus.get().publish(
+          eventBus.publish(
             new Events.AlertEvent(AlertType.ERROR, "resource.error"));
           throw new RuntimeException(ioExc);
         }
@@ -103,24 +117,25 @@ public class MainController
     try
     {
       FXMLLoader loader = new FXMLLoader(ResourceLoader.getFxmlUrl(view));
+      Parent root = loader.load();
+
       Object controller = loader.getController();
       if (controller instanceof UserAware)
-        ((UserAware) controller).setUser(authenticatedUser);
+      {
+        UserAware userAwareController = (UserAware) controller;
+        userAwareController.setBoundUser(authenticatedUser);
+        userAwareController.whenUserAvailable(authenticatedUser);
+      }
 
-      /* Our primary window consists of a 3-pane layout; authentication forms
-       * only use the middle pane, however post-auth. forms may use more than
-       * one pane.
-       */
-      Parent root = loader.load();
-      logger.info(root.getClass().getName());
-      if (root instanceof SplitPane)
-        mainSplitPane.getItems().setAll(root);
-      else
-        contentPane.getChildren().setAll(root);
+      if (!(root instanceof SplitPane))
+        throw new IllegalStateException(
+          "Root node of view FXML must be a SplitPane");
+
+      mainSplitPane.getItems().setAll(root);
       switchMenuTabTo(view);
     } catch (IOException ioExc)
     {
-      EventBus.get().publish(
+      eventBus.publish(
         new Events.AlertEvent(AlertType.ERROR, "resource.error"));
       throw new RuntimeException(ioExc);
     }
