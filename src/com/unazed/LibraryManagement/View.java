@@ -16,6 +16,7 @@ public enum View
   DASHBOARD_VIEW_BOOKS("dashboard/ViewBooks"),
   DASHBOARD_VIEW_MY_LOANS("dashboard/ViewMyLoans"),
   DASHBOARD_VIEW_MEMBERS("dashboard/ViewMembers"),
+  DASHBOARD_VIEW_MEMBERS_DETAIL("dashboard/ViewMembersDetail"),
   DASHBOARD_VIEW_ALL_LOANS("dashboard/ViewAllLoans");
 
   private static final Logger logger = Logger.getLogger(View.class.getName());

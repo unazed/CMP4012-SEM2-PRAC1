@@ -39,6 +39,7 @@ BEGIN;
   m_token := sign(
     json_build_object(
       'user_id', m_user_id,
+      'username', m_username,
       'email', m_email,
       'role', m_user_role),
     library_internal.get_app_config_value('jwt_secret'),

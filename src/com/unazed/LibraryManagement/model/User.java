@@ -8,7 +8,7 @@ public class User
 {
   private final int id;
   private final String email;
-  private final String jwtToken;
+  private final String token;
   private final String username;
   private final String role;
  
@@ -46,13 +46,13 @@ public class User
   }
 
   public User(
-    int id, String email, String username, String role, String jwtToken)
+    int id, String email, String username, String role, String token)
   {
     this.id = id;
     this.email = email;
     this.username = username;
     this.role = role;
-    this.jwtToken = jwtToken;
+    this.token = token;
   }
 
   public static User fromJson(String json)
@@ -70,9 +70,9 @@ public class User
     return email;
   }
 
-  public String getJwtToken()
+  public String getToken()
   {
-    return jwtToken;
+    return token;
   }
 
   public Role getRole()

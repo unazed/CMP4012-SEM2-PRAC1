@@ -72,7 +72,7 @@
             </VBox>
          </children>
       </AnchorPane>
-    <ScrollPane fx:id="spDashboardContent" minHeight="250.0" prefHeight="200.0" prefWidth="200.0">
+    <ScrollPane fx:id="spDashboardContent" minHeight="250.0" prefHeight="200.0" prefWidth="200.0" fitToWidth="true" fitToHeight="true">
          <content>
             <Label text="Select a menu option from the left to begin" textFill="#727272">
                <padding>
@@ -80,6 +80,6 @@
                </padding>
             </Label>
          </content></ScrollPane>
-    <ScrollPane fx:id="spDashboardAux" prefHeight="200.0" prefWidth="200.0" />
+    <ScrollPane fx:id="spDashboardAux" prefHeight="200.0" prefWidth="200.0" fitToWidth="true" fitToHeight="true" />
   </items>
 </SplitPane>

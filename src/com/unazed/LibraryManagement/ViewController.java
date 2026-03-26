@@ -46,6 +46,11 @@ public class ViewController
     return getViewOf(this.getClass()); 
   }
 
+  public boolean postInitialize()
+  {
+    return true;
+  }
+
   public static View getViewOf(Class<? extends ViewController> controllerClass)
   {
     ViewName annotation = controllerClass.getAnnotation(ViewName.class);

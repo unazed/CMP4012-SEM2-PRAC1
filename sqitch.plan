@@ -15,3 +15,5 @@ token_decode 2026-03-16T18:55:52Z Mindaugas Taujanskas <mindaugas.taujanskas@pro
 add_book 2026-03-16T19:12:03Z Mindaugas Taujanskas <mindaugas.taujanskas@proton.me> # Registering a new book to the library
 add_loan 2026-03-17T10:59:07Z Mindaugas Taujanskas <mindaugas.taujanskas@proton.me> # Procedures for creating/modifying loans
 remove_loan 2026-03-20T18:08:28Z Mindaugas Taujanskas <mindaugas.taujanskas@proton.me> # Remove digital/physical book loans
+list_users 2026-03-26T15:23:08Z Mindaugas Taujanskas <mindaugas.taujanskas@proton.me> # Functions for listing all users
+login_with_token 2026-03-26T18:40:16Z Mindaugas Taujanskas <mindaugas.taujanskas@proton.me> # Add utilities for logging in with session tokens

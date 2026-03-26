@@ -29,7 +29,6 @@ BEGIN;
   RETURNS library_internal.result_type AS $$
   DECLARE
     m_session   JSONB;
-    m_user_role TEXT;
   BEGIN
     m_session := library_internal.decode_token(p_token);
     IF m_session IS NULL THEN

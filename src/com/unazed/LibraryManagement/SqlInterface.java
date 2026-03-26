@@ -1,6 +1,7 @@
 package com.unazed.LibraryManagement;
 
 import java.sql.*;
+import java.util.List;
 import java.util.Properties;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -13,13 +14,14 @@ public class SqlInterface
     SqlInterface.class.getName());
   private static SqlInterface INSTANCE = null;
   private Connection conn;
+  private String sessionToken;
 
   private SqlInterface(String url)
     throws SQLException
   {
     try
     {
-      this.conn = DriverManager.getConnection(url);
+      conn = DriverManager.getConnection(url);
       logger.info("Connected to SQL server: " + url);
     } catch (SQLException sqlExc)
     {
@@ -41,6 +43,12 @@ public class SqlInterface
     if (INSTANCE == null)
       throw new IllegalStateException("SqlInterface instance not initialized");
     return INSTANCE;
+  }
+
+  public void setSessionToken(String sessionToken)
+  {
+    logger.info("Session token set: " + sessionToken);
+    this.sessionToken = sessionToken;
   }
 
   public SqlInterface(String url, Properties props)
@@ -92,6 +100,42 @@ public class SqlInterface
     } catch (SQLException sqlExc)
     {
       logger.log(Level.SEVERE, "Failed to log in user:", sqlExc);
+      throw sqlExc;
+    }
+  }
+
+  public SqlApiResult<User> loginWithToken(String token) throws SQLException
+  {
+    try (PreparedStatement stmt = conn.prepareCall(
+      "SELECT * FROM library_api.get_token_information(?)");)
+    {
+      stmt.setString(1, token);
+      ResultSet rs = stmt.executeQuery();
+      if (!rs.next())
+        throw new SQLException("No result returned");
+      return SqlApiResult.fromResultSet(rs, User.class);
+    } catch (SQLException sqlExc)
+    {
+      logger.log(Level.SEVERE, "Failed to log in with token:", sqlExc);
+      throw sqlExc;
+    }
+  }
+
+  public SqlApiResult<List<User>> getMembers() throws SQLException
+  {
+    if (sessionToken == null)
+      throw new IllegalStateException("Session token not set");
+    try (PreparedStatement stmt = conn.prepareCall(
+      "SELECT * FROM library_api.get_members(?)");)
+    {
+      stmt.setString(1, sessionToken);
+      ResultSet rs = stmt.executeQuery();
+      if (!rs.next())
+        throw new SQLException("No result returned");
+      return SqlApiResult.fromResultSetList(rs, User.class);
+    } catch (SQLException sqlExc)
+    {
+      logger.log(Level.SEVERE, "Failed to get members:", sqlExc);
       throw sqlExc;
     }
   }

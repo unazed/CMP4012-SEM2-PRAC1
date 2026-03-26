@@ -2,8 +2,10 @@ package com.unazed.LibraryManagement;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.List;
 
 import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 
 public class SqlApiResult<T> implements AutoCloseable
 {
@@ -32,6 +34,28 @@ public class SqlApiResult<T> implements AutoCloseable
     } catch (SQLException sqlExc)
     {
       throw new RuntimeException("Failed to parse SQL result set", sqlExc);
+    }
+  }
+
+  public static <T> SqlApiResult<List<T>> fromResultSetList(
+    ResultSet rs, Class<T> clazz)
+  {
+    try
+    {
+      boolean success = rs.getBoolean("success");
+      String errorCode = rs.getString("error_code");
+      if (!success)
+          return new SqlApiResult<>(false, errorCode, null);
+
+      String json = rs.getString("data");
+      List<T> items = new Gson().fromJson(json,
+          TypeToken.getParameterized(List.class, clazz).getType());
+      return new SqlApiResult<>(true, null, items);
+    }
+    catch (SQLException sqlExc)
+    {
+      throw new RuntimeException(
+        "Failed to parse SQL result set (list)", sqlExc);
     }
   }
 

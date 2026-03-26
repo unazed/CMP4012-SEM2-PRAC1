@@ -12,12 +12,15 @@ import com.unazed.LibraryManagement.Events;
 import com.unazed.LibraryManagement.ResourceLoader;
 import com.unazed.LibraryManagement.View;
 import com.unazed.LibraryManagement.ViewController;
+import com.unazed.LibraryManagement.controller.DashboardController.DashboardEvents.AuxDataReceiver;
 import com.unazed.LibraryManagement.controller.dashboard.MemberViewController;
 import com.unazed.LibraryManagement.model.User;
 
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.control.Alert.AlertType;
+import javafx.scene.Parent;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
 
@@ -42,18 +45,30 @@ public class DashboardController extends ViewController.UserAwareController
       }      
     }
 
-    public static class DashboardAuxSwapEvent
+    public interface AuxDataReceiver<T>
+    {
+      void receiveAuxData(T auxData);
+    }
+
+    public static class DashboardAuxSwapEvent<T>
     {
       private final View newAuxView;
+      private final T auxData;
 
-      public DashboardAuxSwapEvent(View newAuxView)
+      public DashboardAuxSwapEvent(View newAuxView, T auxData)
       {
         this.newAuxView = newAuxView;
+        this.auxData = auxData;
       }
 
       public View getNewAuxView()
       {
         return newAuxView;
+      }
+
+      public T getAuxData()
+      {
+        return auxData;
       }
     }
   }
@@ -130,28 +145,55 @@ public class DashboardController extends ViewController.UserAwareController
   {
     try
     {
-      spDashboardContent.setContent(
-        ResourceLoader.loadFxml(event.getNewContentView()));
+      FXMLLoader loader = new FXMLLoader(
+        ResourceLoader.getFxmlUrl(event.getNewContentView()));
+      Parent root = loader.load();
+      if (!(loader.getController()
+        instanceof UserAwareController userAwareController))
+      {
+        throw new IllegalStateException(
+          "Controller for view " + event.getNewContentView()
+          + " does not extend UserAwareController");
+      }
+      userAwareController.setBoundUser(getBoundUser());
+      userAwareController.whenUserAvailable(getBoundUser());
+      spDashboardContent.setContent(root);
     } catch (IOException ioExc)
     {
       logger.log(Level.SEVERE, "Failed to swap dashboard content view", ioExc);
       eventBus.publish(
         new Events.AlertEvent(AlertType.ERROR, "resource.error"));
+      throw new RuntimeException(ioExc);
     }
   }
 
+  @SuppressWarnings("unchecked")
   private void dashboardAuxSwapEventHandler(
-    DashboardEvents.DashboardAuxSwapEvent event)
+    DashboardEvents.DashboardAuxSwapEvent<?> event)
   {
     try
     {
-      spDashboardAux.setContent(
-        ResourceLoader.loadFxml(event.getNewAuxView()));
+      FXMLLoader loader = new FXMLLoader(
+        ResourceLoader.getFxmlUrl(event.getNewAuxView()));
+      Parent root = loader.load();
+      Object controller = loader.getController();
+      if (controller instanceof UserAwareController userAwareController)
+      {
+        userAwareController.setBoundUser(getBoundUser());
+        userAwareController.whenUserAvailable(getBoundUser()); 
+      }
+
+      if (controller instanceof AuxDataReceiver auxDataReceiver)
+        auxDataReceiver.receiveAuxData(event.getAuxData());
+
+      spDashboardAux.setContent(root);
+
     } catch (IOException ioExc)
     {
       logger.log(Level.SEVERE, "Failed to swap dashboard auxiliary view", ioExc);
       eventBus.publish(
         new Events.AlertEvent(AlertType.ERROR, "resource.error"));
+      throw new RuntimeException(ioExc);
     }
   }
 }

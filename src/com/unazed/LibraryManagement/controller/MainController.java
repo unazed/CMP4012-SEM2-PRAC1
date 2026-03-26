@@ -3,6 +3,7 @@ package com.unazed.LibraryManagement.controller;
 import com.unazed.LibraryManagement.EventBus;
 import com.unazed.LibraryManagement.Events;
 import com.unazed.LibraryManagement.ResourceLoader;
+import com.unazed.LibraryManagement.SqlInterface;
 import com.unazed.LibraryManagement.View;
 import com.unazed.LibraryManagement.ViewController;
 import com.unazed.LibraryManagement.model.User;
@@ -11,6 +12,7 @@ import java.io.IOException;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import java.util.prefs.Preferences;
 
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -55,6 +57,8 @@ public class MainController extends ViewController
     logger.info("User signed out: " + authenticatedUser.getUsername());
     eventBus.publish(new Events.StatusMessageEvent("Signed out successfully."));
     authenticatedUser = null;
+    SqlInterface.get().setSessionToken(null);
+    Preferences.userNodeForPackage(LoginController.class).remove("storedToken");
     switchTo(View.LOGIN);
   }
 
@@ -73,6 +77,7 @@ public class MainController extends ViewController
     if (authenticatedUser != null)
       throw new IllegalStateException("User is already authenticated");
     authenticatedUser = event.getUser();
+    SqlInterface.get().setSessionToken(authenticatedUser.getToken());
     switchTo(View.DASHBOARD);
   }
 
@@ -123,6 +128,10 @@ public class MainController extends ViewController
       if (!(controller instanceof ViewController viewController))
         throw new IllegalStateException(
           "Controller for view " + view + " does not extend ViewController");
+
+      /* Solves the successful token login premature view switch */
+      if (!viewController.postInitialize())
+        return;
 
       if (viewController.getView() != view)
         throw new IllegalStateException(

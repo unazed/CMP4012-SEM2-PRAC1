@@ -80,6 +80,7 @@ BEGIN;
     json_build_object(
       'user_id', m_user_id,
       'email', m_email,
+      'username', p_username,
       'role', 'member'::library.user_role),
     library_internal.get_app_config_value('jwt_secret'),
     'HS256');
