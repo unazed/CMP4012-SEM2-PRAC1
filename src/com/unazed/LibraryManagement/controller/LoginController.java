@@ -10,6 +10,7 @@ import com.unazed.LibraryManagement.LockableView;
 import com.unazed.LibraryManagement.SqlApiResult;
 import com.unazed.LibraryManagement.SqlInterface;
 import com.unazed.LibraryManagement.View;
+import com.unazed.LibraryManagement.ViewController;
 import com.unazed.LibraryManagement.model.User;
 
 import javafx.fxml.FXML;
@@ -18,7 +19,8 @@ import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
 import javafx.scene.control.Alert.AlertType;
 
-public class LoginController extends LockableView
+@ViewController.ViewName(View.LOGIN)
+public class LoginController extends ViewController
 {
   @FXML private TextField tfLoginEmail;
   @FXML private PasswordField tfLoginPassword;
@@ -26,18 +28,19 @@ public class LoginController extends LockableView
 
   private static final Logger logger = Logger.getLogger(
     LoginController.class.getName());
-  public static final View VIEW = View.LOGIN;
+  private final LockableView lockableView = new LockableView();
 
   @FXML
   public void initialize()
   {
-    lockableElements = List.of(tfLoginEmail, tfLoginPassword, btnLogin);
+    lockableView.lockableElements
+      = List.of(tfLoginEmail, tfLoginPassword, btnLogin);
   }
 
   @FXML
   private void onLoginClick()
   {
-    lockView();
+    lockableView.lockView();
 
     String email = tfLoginEmail.getText();
     String password = tfLoginPassword.getText();
@@ -47,7 +50,7 @@ public class LoginController extends LockableView
     {
       eventBus.publish(
         new Events.StatusMessageEvent("Please fill in all fields."));
-      unlockView();
+      lockableView.unlockView();
       return;
     }
 
@@ -59,7 +62,7 @@ public class LoginController extends LockableView
         logger.info("Failed to login with email: " + email);
         eventBus.publish(new Events.StatusMessageEvent(
           "Login failed: " + result.getErrorCode()));
-        unlockView();
+        lockableView.unlockView();
         return;
       }
       logger.info("User logged in: " + email);
@@ -68,7 +71,7 @@ public class LoginController extends LockableView
     {
       eventBus.publish(
         new Events.AlertEvent(AlertType.ERROR, "db.connection.error"));
-      unlockView();
+      lockableView.unlockView();
     }
   }
 }

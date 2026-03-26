@@ -4,14 +4,14 @@ import com.unazed.LibraryManagement.EventBus;
 import com.unazed.LibraryManagement.Events;
 import com.unazed.LibraryManagement.ResourceLoader;
 import com.unazed.LibraryManagement.View;
+import com.unazed.LibraryManagement.ViewController;
 import com.unazed.LibraryManagement.model.User;
-import com.unazed.LibraryManagement.model.User.UserAware;
 
 import java.io.IOException;
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import javafx.event.Event;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -20,7 +20,9 @@ import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.SplitPane;
 import javafx.scene.layout.StackPane;
 
-public class MainController
+@ViewController.ViewName(View.MAIN)
+@ViewController.AllowedRoles({User.Role.Librarian, User.Role.Member})
+public class MainController extends ViewController
 {
   @FXML private StackPane contentPane;
   @FXML private SplitPane mainSplitPane;
@@ -28,7 +30,6 @@ public class MainController
 
   private static final java.util.logging.Logger logger
     = Logger.getLogger(MainController.class.getName());
-  public static final View VIEW = View.MAIN;
 
   private User authenticatedUser;
   private EventBus eventBus = EventBus.get();
@@ -44,7 +45,7 @@ public class MainController
     eventBus.subscribe(
       Events.UserSignoutEvent.class, this::userSignoutEventHandler);
 
-    switchTo(LoginController.VIEW);
+    switchTo(View.LOGIN);
   }
 
   private void userSignoutEventHandler(Events.UserSignoutEvent event)
@@ -54,7 +55,7 @@ public class MainController
     logger.info("User signed out: " + authenticatedUser.getUsername());
     eventBus.publish(new Events.StatusMessageEvent("Signed out successfully."));
     authenticatedUser = null;
-    switchTo(LoginController.VIEW);
+    switchTo(View.LOGIN);
   }
 
   private void alertEventHandler(Events.AlertEvent event)
@@ -72,8 +73,7 @@ public class MainController
     if (authenticatedUser != null)
       throw new IllegalStateException("User is already authenticated");
     authenticatedUser = event.getUser();
-    switchTo(DashboardController.VIEW);
-    switchMenuTabTo(LoginController.VIEW);
+    switchTo(View.DASHBOARD);
   }
 
   private void switchMenuTabTo(View view)
@@ -85,7 +85,7 @@ public class MainController
       -> {
         try
         {
-          Parent menu = ResourceLoader.loadFxml(AuthMenuController.VIEW);
+          Parent menu = ResourceLoader.loadFxml(View.AUTH_MENU);
           menuPane.getChildren().setAll(menu);
         } catch (IOException ioExc)
         {
@@ -98,7 +98,7 @@ public class MainController
       -> {
         try
         {
-          Parent menu = ResourceLoader.loadFxml(AppMenuController.VIEW);
+          Parent menu = ResourceLoader.loadFxml(View.APP_MENU);
           menuPane.getChildren().setAll(menu);
         } catch (IOException ioExc)
         {
@@ -118,11 +118,33 @@ public class MainController
     {
       FXMLLoader loader = new FXMLLoader(ResourceLoader.getFxmlUrl(view));
       Parent root = loader.load();
-
       Object controller = loader.getController();
-      if (controller instanceof UserAware)
+
+      if (!(controller instanceof ViewController viewController))
+        throw new IllegalStateException(
+          "Controller for view " + view + " does not extend ViewController");
+
+      if (viewController.getView() != view)
+        throw new IllegalStateException(
+          "Controller for view " + view + " has @ViewName " +
+          viewController.getView());
+
+      if (controller
+        instanceof ViewController.UserAwareController userAwareController)
       {
-        UserAware userAwareController = (UserAware) controller;
+        /* NB: Some controllers have an @AllowedRoles annotation specifying
+         *     which user roles are allowed to access it.
+         */
+        ViewController.AllowedRoles annotation
+          = controller.getClass().getAnnotation(
+            ViewController.AllowedRoles.class);
+        if (annotation != null
+          && !List.of(annotation.value()).contains(authenticatedUser.getRole()))
+        {
+          eventBus.publish(
+            new Events.AlertEvent(AlertType.ERROR, "access.denied"));
+          return;
+        }
         userAwareController.setBoundUser(authenticatedUser);
         userAwareController.whenUserAvailable(authenticatedUser);
       }

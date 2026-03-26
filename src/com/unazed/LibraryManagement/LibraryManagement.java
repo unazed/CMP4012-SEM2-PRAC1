@@ -1,7 +1,5 @@
 package com.unazed.LibraryManagement;
 
-import com.unazed.LibraryManagement.controller.MainController;
-
 import javafx.application.Application;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert.AlertType;
@@ -28,7 +26,7 @@ public class LibraryManagement extends Application
 
     try
     {
-      stage.setScene(new Scene(ResourceLoader.loadFxml(MainController.VIEW)));
+      stage.setScene(new Scene(ResourceLoader.loadFxml(View.MAIN)));
       stage.show();
     } catch (IOException ioExc)
     {

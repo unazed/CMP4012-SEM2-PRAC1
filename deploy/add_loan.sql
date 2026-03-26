@@ -111,7 +111,7 @@ BEGIN;
       RETURN m_auth_result;
     END IF;
 
-    m_user_role := (m_auth_result.data->>'user_role')::library.user_role;
+    m_user_role := (m_auth_result.data->>'role')::library.user_role;
     m_user_id := (m_auth_result.data->>'user_id')::INTEGER;
 
     SELECT COALESCE(jsonb_agg(to_jsonb(PL)), '[]'::JSONB)
@@ -138,7 +138,7 @@ BEGIN;
       RETURN m_auth_result;
     END IF;
 
-    m_user_role := (m_auth_result.data->>'user_role')::library.user_role;
+    m_user_role := (m_auth_result.data->>'role')::library.user_role;
     m_user_id := (m_auth_result.data->>'user_id')::INTEGER;
 
     SELECT * INTO m_loan
@@ -171,7 +171,7 @@ BEGIN;
       RETURN m_auth_result;
     END IF;
 
-    m_user_role := (m_auth_result.data->>'user_role')::library.user_role;
+    m_user_role := (m_auth_result.data->>'role')::library.user_role;
     m_user_id := (m_auth_result.data->>'user_id')::INTEGER;
 
     SELECT COALESCE(jsonb_agg(to_jsonb(DL)), '[]'::JSONB)
@@ -198,7 +198,7 @@ BEGIN;
       RETURN m_auth_result;
     END IF;
 
-    m_user_role := (m_auth_result.data->>'user_role')::library.user_role;
+    m_user_role := (m_auth_result.data->>'role')::library.user_role;
     m_user_id := (m_auth_result.data->>'user_id')::INTEGER;
 
     IF NOT EXISTS (

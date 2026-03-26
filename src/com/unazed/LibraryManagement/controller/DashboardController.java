@@ -1,42 +1,101 @@
 package com.unazed.LibraryManagement.controller;
 
+import java.io.IOException;
 import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import com.unazed.LibraryManagement.EventBus;
 import com.unazed.LibraryManagement.Events;
+import com.unazed.LibraryManagement.ResourceLoader;
 import com.unazed.LibraryManagement.View;
+import com.unazed.LibraryManagement.ViewController;
+import com.unazed.LibraryManagement.controller.dashboard.MemberViewController;
 import com.unazed.LibraryManagement.model.User;
 
 import javafx.fxml.FXML;
+import javafx.scene.control.ScrollPane;
+import javafx.scene.control.Alert.AlertType;
+import javafx.scene.control.Label;
+import javafx.scene.control.ListView;
 
-public class DashboardController extends User.UserAware
+@ViewController.ViewName(View.DASHBOARD)
+@ViewController.AllowedRoles({User.Role.Librarian, User.Role.Member})
+public class DashboardController extends ViewController.UserAwareController
 {
+  public static class DashboardEvents
+  {
+    public static class DashboardContentSwapEvent
+    {
+      private final View newContentView;
+
+      public DashboardContentSwapEvent(View newContentView)
+      {
+        this.newContentView = newContentView;
+      }
+
+      public View getNewContentView()
+      {
+        return newContentView;
+      }      
+    }
+
+    public static class DashboardAuxSwapEvent
+    {
+      private final View newAuxView;
+
+      public DashboardAuxSwapEvent(View newAuxView)
+      {
+        this.newAuxView = newAuxView;
+      }
+
+      public View getNewAuxView()
+      {
+        return newAuxView;
+      }
+    }
+  }
+
   private static final Logger logger = Logger.getLogger(
     DashboardController.class.getName());
-
-  @FXML private javafx.scene.control.ListView<String> dashboardListView;
-  @FXML private javafx.scene.control.Label lblUsername;
-
-  public static final View VIEW = View.DASHBOARD;
-  public static final List<String> menuItemsLibrarian = List.of(
-    "Add/modify books",
-    "View books",
-    "View my loans",
-    "View members",
-    "View all loans");
-  public static final List<String> menuItemsMember = List.of(
-    "View books",
-    "View my loans");
+  
+  @FXML private ListView<String> dashboardListView;
+  @FXML private Label lblUsername;
+  @FXML private ScrollPane spDashboardContent;
+  @FXML private ScrollPane spDashboardAux;
+   
+  private EventBus eventBus = EventBus.get();
+  private Map<String, Class<? extends ViewController.UserAwareController>>
+    menuItemControllerMap = Map.of(
+      "View all members", MemberViewController.class);
 
   @Override
   public final void whenUserAvailable(User user)
   {
+    for (
+      Entry<String, Class<? extends ViewController.UserAwareController>> entry
+      : menuItemControllerMap.entrySet())
+    {
+      ViewController.AllowedRoles annotation
+        = entry.getValue().getAnnotation(ViewController.AllowedRoles.class);
+      if (annotation == null)
+        throw new IllegalStateException(
+          "Controller class " + entry.getValue().getName()
+          + " is missing @AllowedRoles annotation");
+      if (List.of(annotation.value()).contains(user.getRole()))
+        dashboardListView.getItems().add(entry.getKey());
+    }
+
+    eventBus.subscribe(
+      DashboardEvents.DashboardContentSwapEvent.class,
+      e -> dashboardContentSwapEventHandler(e));
+    eventBus.subscribe(
+      DashboardEvents.DashboardAuxSwapEvent.class,
+      e -> dashboardAuxSwapEventHandler(e));
+
     lblUsername.setText(getBoundUser().getUsername());
-    if (getBoundUser().getRole() == User.Role.Librarian)
-      dashboardListView.getItems().setAll(menuItemsLibrarian);
-    else
-      dashboardListView.getItems().setAll(menuItemsMember);
     dashboardListView
       .getSelectionModel()
       .selectedItemProperty()
@@ -57,6 +116,42 @@ public class DashboardController extends User.UserAware
 
   private void onNavigationItemSelected(String item)
   {
-    logger.info("Selected dashboard item: " + item);
+    Class<? extends ViewController.UserAwareController> controllerClass
+      = menuItemControllerMap.get(item);
+    if (controllerClass == null)
+      throw new IllegalStateException(
+        "No controller mapped for menu item: " + item);
+    eventBus.publish(new DashboardEvents.DashboardContentSwapEvent(
+      ViewController.getViewOf(controllerClass)));
+  }
+
+  private void dashboardContentSwapEventHandler(
+    DashboardEvents.DashboardContentSwapEvent event)
+  {
+    try
+    {
+      spDashboardContent.setContent(
+        ResourceLoader.loadFxml(event.getNewContentView()));
+    } catch (IOException ioExc)
+    {
+      logger.log(Level.SEVERE, "Failed to swap dashboard content view", ioExc);
+      eventBus.publish(
+        new Events.AlertEvent(AlertType.ERROR, "resource.error"));
+    }
+  }
+
+  private void dashboardAuxSwapEventHandler(
+    DashboardEvents.DashboardAuxSwapEvent event)
+  {
+    try
+    {
+      spDashboardAux.setContent(
+        ResourceLoader.loadFxml(event.getNewAuxView()));
+    } catch (IOException ioExc)
+    {
+      logger.log(Level.SEVERE, "Failed to swap dashboard auxiliary view", ioExc);
+      eventBus.publish(
+        new Events.AlertEvent(AlertType.ERROR, "resource.error"));
+    }
   }
 }

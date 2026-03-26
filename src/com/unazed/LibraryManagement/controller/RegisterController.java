@@ -9,6 +9,7 @@ import com.unazed.LibraryManagement.LockableView;
 import com.unazed.LibraryManagement.SqlApiResult;
 import com.unazed.LibraryManagement.SqlInterface;
 import com.unazed.LibraryManagement.View;
+import com.unazed.LibraryManagement.ViewController;
 import com.unazed.LibraryManagement.model.User;
 
 import javafx.fxml.FXML;
@@ -17,7 +18,8 @@ import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
 import javafx.scene.control.Alert.AlertType;
 
-public class RegisterController extends LockableView
+@ViewController.ViewName(View.REGISTER)
+public class RegisterController extends ViewController
 {
   @FXML private TextField tfRegisterEmail;
   @FXML private TextField tfRegisterUsername;
@@ -25,12 +27,12 @@ public class RegisterController extends LockableView
   @FXML private PasswordField tfRegisterConfirmPassword;
   @FXML private Button btnRegister;
 
-  public static final View VIEW = View.REGISTER;
+  private final LockableView lockableView = new LockableView();
 
   @FXML
   public void initialize()
   {
-    lockableElements = List.of(
+    lockableView.lockableElements = List.of(
       tfRegisterEmail, tfRegisterUsername, tfRegisterPassword,
       tfRegisterConfirmPassword, btnRegister);
   }
@@ -38,7 +40,7 @@ public class RegisterController extends LockableView
   @FXML
   private void onRegisterClick()
   {
-    lockView();
+    lockableView.lockView();
     String email = tfRegisterEmail.getText();
     String username = tfRegisterUsername.getText();
     String password = tfRegisterPassword.getText();
@@ -50,7 +52,7 @@ public class RegisterController extends LockableView
     {
       eventBus.publish(
         new Events.StatusMessageEvent("Please fill in all fields."));
-      unlockView();
+      lockableView.unlockView();
       return;
     }
 
@@ -58,7 +60,7 @@ public class RegisterController extends LockableView
     {
       eventBus.publish(
         new Events.StatusMessageEvent("Please enter a valid email address."));
-      unlockView();
+      lockableView.unlockView();
       return;
     }
 
@@ -67,7 +69,7 @@ public class RegisterController extends LockableView
       eventBus.publish(
         new Events.StatusMessageEvent(
           "Username must be at least 3 characters."));
-      unlockView();
+      lockableView.unlockView();
       return;
     }
 
@@ -75,7 +77,7 @@ public class RegisterController extends LockableView
     {
       eventBus.publish(
         new Events.StatusMessageEvent("Passwords do not match."));
-      unlockView();
+      lockableView.unlockView();
       return;
     }
 
@@ -86,14 +88,14 @@ public class RegisterController extends LockableView
       {
         eventBus.publish(new Events.StatusMessageEvent(
           "Registration failed: " + result.getErrorCode()));
-        unlockView();
+        lockableView.unlockView();
         return;
       }
       eventBus.publish(new Events.UserAuthenticatedEvent(result.getData()));
     } catch (SQLException exc) {
       eventBus.publish(
         new Events.AlertEvent(AlertType.ERROR, "db.connection.error"));
-      unlockView();
+      lockableView.unlockView();
     }
 
   }

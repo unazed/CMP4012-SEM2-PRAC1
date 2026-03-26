@@ -36,6 +36,7 @@
       <jvmarg value="${fx.path}" />
       <jvmarg value="--enable-native-access=javafx.graphics" />
       <jvmarg value="--add-modules=javafx.controls,javafx.fxml" />
+      <jvmarg value="-Djava.util.logging.config.file=${resources.dir}/logging.properties"/>
       <classpath>
         <pathelement path="${build.dir}" />
         <pathelement path="${pg.jar}" />

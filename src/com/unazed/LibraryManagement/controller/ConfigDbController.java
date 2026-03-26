@@ -1,8 +1,9 @@
 package com.unazed.LibraryManagement.controller;
 
 import com.unazed.LibraryManagement.View;
+import com.unazed.LibraryManagement.ViewController;
 
-public class ConfigDbController
+@ViewController.ViewName(View.CONFIG_DB)
+public class ConfigDbController extends ViewController
 {
-  public static final View VIEW = View.CONFIG_DB;
 }

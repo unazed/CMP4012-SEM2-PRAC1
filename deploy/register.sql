@@ -80,7 +80,7 @@ BEGIN;
     json_build_object(
       'user_id', m_user_id,
       'email', m_email,
-      'user_role', 'member'::library.user_role),
+      'role', 'member'::library.user_role),
     library_internal.get_app_config_value('jwt_secret'),
     'HS256');
 
@@ -88,7 +88,8 @@ BEGIN;
       json_build_object(
         'token', m_token,
         'username', p_username,
-        'email', m_email));
+        'email', m_email,
+        'role', 'member'::library.user_role));
   END;
   $$ LANGUAGE plpgsql SECURITY DEFINER;
 

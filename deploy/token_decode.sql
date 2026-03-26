@@ -52,7 +52,7 @@ BEGIN;
     m_auth_result := library_internal.is_valid_session(p_token);
     IF NOT m_auth_result.success THEN
       RETURN m_auth_result;
-    ELSIF (m_auth_result.data->>'user_role')::library.user_role
+    ELSIF (m_auth_result.data->>'role')::library.user_role
         <> 'librarian'::library.user_role THEN
       RETURN library_internal.make_error_result(
         'insufficient_permissions'::library_internal.auth_error_code);

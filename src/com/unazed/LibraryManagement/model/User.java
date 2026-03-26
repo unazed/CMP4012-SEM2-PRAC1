@@ -1,5 +1,7 @@
 package com.unazed.LibraryManagement.model;
 
+import java.util.List;
+
 import com.google.gson.Gson;
 
 public class User
@@ -8,38 +10,24 @@ public class User
   private final String email;
   private final String jwtToken;
   private final String username;
-  private final Role role;
-
-  public static class UserAware
-  {
-    private User boundUser;
-
-    public void whenUserAvailable(User user)
-    {
-      return;
-    }
-
-    public void setBoundUser(User user)
-    {
-      this.boundUser = user;
-    }
-
-    public User getBoundUser()
-    {
-      return boundUser;
-    }
-  }
+  private final String role;
+ 
 
   public static enum Role
   {
     Librarian("librarian"), Member("member");
 
     private final String roleName;
-    
+
     Role(String roleName)
     {
       this.roleName = roleName;
     }
+
+    public static final List<Role> getAllRoles()
+    {
+      return List.of(Role.values());
+    } 
 
     public String getRoleName()
     {
@@ -63,7 +51,7 @@ public class User
     this.id = id;
     this.email = email;
     this.username = username;
-    this.role = Role.fromRoleName(role);
+    this.role = role;
     this.jwtToken = jwtToken;
   }
 
@@ -89,7 +77,7 @@ public class User
 
   public Role getRole()
   {
-    return role;
+    return Role.fromRoleName(role);
   }
 
   public String getUsername()

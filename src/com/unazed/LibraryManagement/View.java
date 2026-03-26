@@ -11,7 +11,12 @@ public enum View
   REGISTER("Register"),
   CONFIG_DB("ConfigDb"),
   ABOUT("About"),
-  DASHBOARD("Dashboard"), APP_MENU("AppMenu");
+  DASHBOARD("Dashboard"), APP_MENU("AppMenu"),
+  DASHBOARD_ADD_MODIFY_BOOKS("dashboard/AddModifyBooks"),
+  DASHBOARD_VIEW_BOOKS("dashboard/ViewBooks"),
+  DASHBOARD_VIEW_MY_LOANS("dashboard/ViewMyLoans"),
+  DASHBOARD_VIEW_MEMBERS("dashboard/ViewMembers"),
+  DASHBOARD_VIEW_ALL_LOANS("dashboard/ViewAllLoans");
 
   private static final Logger logger = Logger.getLogger(View.class.getName());
   private final String viewName;
