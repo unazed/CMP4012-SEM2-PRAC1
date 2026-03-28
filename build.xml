@@ -6,7 +6,7 @@
   <property name="sql_test.dir" value="sql-test/" />
   <property name="fx.dir" value="lib/javafx-sdk-25.0.2/lib" />
 
-  <property name="schema_gen.script" value="schema-gen/main.py" />
+  <property name="schema_gen.script" value="schema-gen/gen_records.py" />
 
   <property name="main.class"
     value="com.unazed.LibraryManagement.LibraryManagement" />
@@ -53,8 +53,6 @@
       <fileset dir="${resources.dir}" />
     </copy>
   </target>
-
-
 
   <target name="run" depends="build">
     <java classname="${main.class}" fork="true">

@@ -69,6 +69,11 @@ public class SqlInterface
     }
   }
 
+  public Connection getConnection()
+  {
+    return conn;
+  }
+
   public SqlApiResult<User> register(
     String email, String username, String password) throws SQLException
   {
@@ -180,7 +185,7 @@ public class SqlInterface
     if (sessionToken == null)
       throw new IllegalStateException("Session token not set");
     try (PreparedStatement stmt = conn.prepareCall(
-      "SELECT * FROM library_api.create_physical_loan(?, ?, ?, ?, ?, ?)");)
+      "SELECT * FROM library_api.create_physical_loan(?, ?, ?, ?, ?, ?)"))
     {
       stmt.setString(1, sessionToken);
       stmt.setString(2, isbn);
