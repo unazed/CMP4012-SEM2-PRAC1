@@ -34,8 +34,14 @@ public class MemberViewController extends ViewController.UserAwareController
     logger.info("Loading members for dashboard view");
     try (SqlApiResult<List<User>> members = SqlInterface.get().getMembers())
     {
-      logger.info("Fetched " + members.getData().size() + " members from database");
-      dashboardMemberListView.getItems().addAll(members.getData());
+      List<User> memberList = members.getData();
+      if (memberList == null)
+      {
+        logger.info("No members found in database");
+        return;
+      }
+      logger.info("Fetched " + memberList.size() + " members from database");
+      dashboardMemberListView.getItems().addAll(memberList);
       dashboardMemberListView.setCellFactory(
         lv -> new ListCell<User>()
         {

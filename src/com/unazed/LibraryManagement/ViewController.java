@@ -4,6 +4,7 @@ import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
+import java.util.List;
 
 import com.unazed.LibraryManagement.model.User;
 
@@ -15,6 +16,17 @@ public class ViewController
 
     public void whenUserAvailable(User user)
     {}
+
+    public List<User.Role> getAllowedRoles()
+    {
+      AllowedRoles annotation
+        = this.getClass().getAnnotation(AllowedRoles.class);
+      if (annotation == null)
+        throw new IllegalStateException(
+          "UserAwareController class " + this.getClass().getName() +
+          " is missing @AllowedRoles annotation");
+      return List.of(annotation.value());
+    }
 
     public final void setBoundUser(User user)
     {

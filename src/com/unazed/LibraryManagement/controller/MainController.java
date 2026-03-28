@@ -9,7 +9,6 @@ import com.unazed.LibraryManagement.ViewController;
 import com.unazed.LibraryManagement.model.User;
 
 import java.io.IOException;
-import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.prefs.Preferences;
@@ -144,11 +143,8 @@ public class MainController extends ViewController
         /* NB: Some controllers have an @AllowedRoles annotation specifying
          *     which user roles are allowed to access it.
          */
-        ViewController.AllowedRoles annotation
-          = controller.getClass().getAnnotation(
-            ViewController.AllowedRoles.class);
-        if (annotation != null
-          && !List.of(annotation.value()).contains(authenticatedUser.getRole()))
+        if (!userAwareController.getAllowedRoles()
+          .contains(authenticatedUser.getRole()))
         {
           eventBus.publish(
             new Events.AlertEvent(AlertType.ERROR, "access.denied"));

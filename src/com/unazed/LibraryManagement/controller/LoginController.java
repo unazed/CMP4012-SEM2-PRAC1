@@ -66,6 +66,8 @@ public class LoginController extends ViewController
       User user = result.getData();
       logger.info("User logged in with token: " + user.getEmail());
       eventBus.publish(new Events.UserAuthenticatedEvent(user));
+      eventBus.publish(
+        new Events.StatusMessageEvent("Logged in with stored token"));
       return true;
     } catch (SQLException sqlExc)
     {

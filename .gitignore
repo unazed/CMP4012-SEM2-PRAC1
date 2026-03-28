@@ -6,3 +6,4 @@ bin/
 .gitmodules
 postgres-language-server.jsonc
 .classpath
+.venv/

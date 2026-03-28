@@ -36,23 +36,23 @@
             <Label text="Account status" GridPane.halignment="RIGHT" GridPane.rowIndex="4" GridPane.valignment="CENTER" />
             <Label text="Email" GridPane.halignment="RIGHT" GridPane.rowIndex="2" />
             <Label text="Username" GridPane.halignment="RIGHT" GridPane.rowIndex="3" />
-            <TextField maxWidth="250.0" minWidth="120.0" prefWidth="250.0" GridPane.columnIndex="1" GridPane.rowIndex="2">
+            <TextField fx:id="tfEmail" maxWidth="250.0" minWidth="120.0" prefWidth="250.0" GridPane.columnIndex="1" GridPane.rowIndex="2">
                <GridPane.margin>
                   <Insets left="15.0" />
                </GridPane.margin>
             </TextField>
-            <TextField maxWidth="250.0" minWidth="120.0" prefWidth="250.0" GridPane.columnIndex="1" GridPane.rowIndex="3">
+            <TextField fx:id="tfUsername" maxWidth="250.0" minWidth="120.0" prefWidth="250.0" GridPane.columnIndex="1" GridPane.rowIndex="3">
                <GridPane.margin>
                   <Insets left="15.0" />
                </GridPane.margin>
             </TextField>
-            <ComboBox maxWidth="250.0" minWidth="120.0" prefWidth="250.0" GridPane.columnIndex="1" GridPane.rowIndex="4">
+            <ComboBox fx:id="cbAccountStatus" maxWidth="250.0" minWidth="120.0" prefWidth="250.0" GridPane.columnIndex="1" GridPane.rowIndex="4">
                <GridPane.margin>
                   <Insets left="15.0" />
                </GridPane.margin>
             </ComboBox>
             <CheckBox fx:id="cbModifyUser" mnemonicParsing="false" onAction="#onMemberDetailModifyToggle" text="Modify user" GridPane.rowIndex="6" />
-            <Button mnemonicParsing="false" onAction="#onMemberDetailSaved" text="Save changes" GridPane.columnIndex="1" GridPane.halignment="RIGHT" GridPane.rowIndex="6" />
+            <Button fx:id="btnSaveChanges" mnemonicParsing="false" onAction="#onMemberDetailSaved" text="Save changes" GridPane.columnIndex="1" GridPane.halignment="RIGHT" GridPane.rowIndex="6" />
             <ScrollPane fitToHeight="true" fitToWidth="true" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefHeight="200.0" prefWidth="200.0" GridPane.columnIndex="1" GridPane.rowIndex="5">
                <GridPane.margin>
                   <Insets bottom="15.0" left="15.0" right="15.0" top="15.0" />

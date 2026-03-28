@@ -117,9 +117,9 @@ BEGIN;
     SELECT COALESCE(jsonb_agg(to_jsonb(PL)), '[]'::JSONB)
     INTO m_loans
     FROM library.PhysicalBookLoans PL
-    WHERE book_isbn = p_isbn
+    WHERE (book_isbn IS NULL OR book_isbn = p_isbn)
       AND (m_user_role = 'librarian'::library.user_role OR user_id = m_user_id);
-      
+ 
     RETURN library_internal.make_success_result(m_loans);
   END;
   $$ LANGUAGE plpgsql SECURITY DEFINER;

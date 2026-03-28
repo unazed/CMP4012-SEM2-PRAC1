@@ -4,19 +4,43 @@
   <property name="build.dir" value="bin/" />
   <property name="resources.dir" value="resources/" />
   <property name="sql_test.dir" value="sql-test/" />
+  <property name="fx.dir" value="lib/javafx-sdk-25.0.2/lib" />
+
+  <property name="schema_gen.script" value="schema-gen/main.py" />
+
   <property name="main.class"
     value="com.unazed.LibraryManagement.LibraryManagement" />
-  <property name="fx.path" value="lib/javafx-sdk-25.0.2/lib" />
+  
   <property name="pg.jar" value="lib/postgresql-42.7.10.jar" />
   <property name="gson.jar" value="lib/gson-2.11.0.jar" />
 
-  <target name="build">
+  <property name="python.bin" value=".venv/bin/python" />
+
+  <target name="schema-gen">
+    <exec executable="${python.bin}" failonerror="true">
+      <arg value="${schema_gen.script}" />
+      <arg value="--output" />
+      <arg value="${src.dir}/unazed/LibraryManagement/model/gen" />
+      <arg value="--tables" />
+      <arg value="Users" />
+      <arg value="PhysicalBooks" />
+      <arg value="DigitalBooks" />
+      <arg value="PhysicalBookLoans" />
+      <arg value="DigitalBookLoans" />
+      <arg value="--package" />
+      <arg value="com.unazed.LibraryManagement.model.gen" />
+      <arg value="--schema" />
+      <arg value="library" />
+    </exec>
+  </target> 
+
+  <target name="build" depends="schema-gen">
     <mkdir dir="${build.dir}" />
     <fileset id="sources" dir="${src.dir}" includes="**/*.java" />
     <pathconvert property="src.files" refid="sources" pathsep=" " />
     <javac destdir="${build.dir}" includeantruntime="false">
       <compilerarg value="--module-path" />
-      <compilerarg value="${fx.path}" />
+      <compilerarg value="${fx.dir}" />
       <compilerarg value="--add-modules=javafx.controls,javafx.fxml" />
       <src path="${src.dir}" />
       <include name="**/*.java" />
@@ -30,10 +54,12 @@
     </copy>
   </target>
 
+
+
   <target name="run" depends="build">
     <java classname="${main.class}" fork="true">
       <jvmarg value="--module-path" />
-      <jvmarg value="${fx.path}" />
+      <jvmarg value="${fx.dir}" />
       <jvmarg value="--enable-native-access=javafx.graphics" />
       <jvmarg value="--add-modules=javafx.controls,javafx.fxml" />
       <jvmarg value="-Djava.util.logging.config.file=${resources.dir}/logging.properties"/>
