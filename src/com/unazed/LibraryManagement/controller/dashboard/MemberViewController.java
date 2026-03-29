@@ -4,14 +4,15 @@ import java.sql.SQLException;
 import java.util.List;
 import java.util.logging.Logger;
 
+import com.unazed.LibraryManagement.DatabaseFunctions;
 import com.unazed.LibraryManagement.EventBus;
 import com.unazed.LibraryManagement.Events;
-import com.unazed.LibraryManagement.SqlApiResult;
-import com.unazed.LibraryManagement.SqlInterface;
 import com.unazed.LibraryManagement.View;
-import com.unazed.LibraryManagement.model.User;
 import com.unazed.LibraryManagement.ViewController;
 import com.unazed.LibraryManagement.controller.DashboardController.DashboardEvents;
+import com.unazed.LibraryManagement.model.gen.ResultType;
+import com.unazed.LibraryManagement.model.gen.UserRole;
+import com.unazed.LibraryManagement.model.gen.Users;
 
 import javafx.fxml.FXML;
 import javafx.scene.control.ListCell;
@@ -19,22 +20,23 @@ import javafx.scene.control.ListView;
 import javafx.scene.control.Alert.AlertType;
 
 @ViewController.ViewName(View.DASHBOARD_VIEW_MEMBERS)
-@ViewController.AllowedRoles({User.Role.Librarian})
+@ViewController.AllowedRoles({UserRole.LIBRARIAN})
 public class MemberViewController extends ViewController.UserAwareController
 {
   private static final Logger logger = Logger.getLogger(
     MemberViewController.class.getName());
   private final EventBus eventBus = EventBus.get();
 
-  @FXML private ListView<User> dashboardMemberListView;
+  @FXML private ListView<Users> dashboardMemberListView;
 
   @Override
-  public void whenUserAvailable(User boundUser)
+  public void whenUserAvailable(String userToken)
   {
     logger.info("Loading members for dashboard view");
-    try (SqlApiResult<List<User>> members = SqlInterface.get().getMembers())
+    try
     {
-      List<User> memberList = members.getData();
+      ResultType result = DatabaseFunctions.getMembers(userToken);
+      List<Users> memberList = result.getDataAsList(Users.class);
       if (memberList == null)
       {
         logger.info("No members found in database");
@@ -43,13 +45,13 @@ public class MemberViewController extends ViewController.UserAwareController
       logger.info("Fetched " + memberList.size() + " members from database");
       dashboardMemberListView.getItems().addAll(memberList);
       dashboardMemberListView.setCellFactory(
-        lv -> new ListCell<User>()
+        lv -> new ListCell<Users>()
         {
           @Override
-          protected void updateItem(User user, boolean empty)
+          protected void updateItem(Users user, boolean empty)
           {
             super.updateItem(user, empty);
-            setText(empty || user == null ? null : user.getUsername());
+            setText(empty || user == null ? null : user.username());
           }
         }
       );

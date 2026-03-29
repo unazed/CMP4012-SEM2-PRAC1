@@ -5,14 +5,14 @@ import java.util.List;
 import java.util.logging.Logger;
 import java.util.prefs.Preferences;
 
+import com.unazed.LibraryManagement.DatabaseFunctions;
 import com.unazed.LibraryManagement.EventBus;
 import com.unazed.LibraryManagement.Events;
 import com.unazed.LibraryManagement.LockableView;
-import com.unazed.LibraryManagement.SqlApiResult;
-import com.unazed.LibraryManagement.SqlInterface;
 import com.unazed.LibraryManagement.View;
 import com.unazed.LibraryManagement.ViewController;
-import com.unazed.LibraryManagement.model.User;
+import com.unazed.LibraryManagement.model.gen.ResultType;
+import com.unazed.LibraryManagement.model.gen.Users;
 
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
@@ -54,18 +54,19 @@ public class LoginController extends ViewController
   private boolean tryLoginWithToken(String token)
   {
     logger.info("Attempting login with stored token: " + token);
-    try (SqlApiResult<User> result = SqlInterface.get().loginWithToken(token))
+    try
     {
-      if (!result.isSuccess())
+      ResultType result = DatabaseFunctions.getTokenInformation(token);
+      if (!result.success())
       {
         logger.info("Failed to login with stored token");
         eventBus.publish(new Events.StatusMessageEvent(
-          "Token login failed: " + result.getErrorCode()));
+          "Token login failed: " + result.errorCode()));
         return false;
       }
-      User user = result.getData();
-      logger.info("User logged in with token: " + user.getEmail());
-      eventBus.publish(new Events.UserAuthenticatedEvent(user));
+      Users user = result.getDataAs(Users.class);
+      logger.info("User logged in with token: " + user.email());
+      eventBus.publish(new Events.UserAuthenticatedEvent(user, token));
       eventBus.publish(
         new Events.StatusMessageEvent("Logged in with stored token"));
       return true;
@@ -94,30 +95,34 @@ public class LoginController extends ViewController
     }
 
     logger.info("Attempting login with email: " + email);
-    try (SqlApiResult<User> result = SqlInterface.get().login(email, password))
+    try
     {
-      if (!result.isSuccess())
+      ResultType result = DatabaseFunctions.loginUser(email, password);
+      if (!result.success())
       {
         logger.info("Failed to login with email: " + email);
         eventBus.publish(new Events.StatusMessageEvent(
-          "Login failed: " + result.getErrorCode()));
+          "Login failed: " + result.errorCode()));
         lockableView.unlockView();
         return;
       }
       logger.info("User logged in: " + email);
-      User user = result.getData();
+      Users user = result.getDataAs(Users.class);
       if (cbRememberLogin.isSelected())
       {
+        String token = result.data().get("token").getAsString();
         Preferences.userNodeForPackage(LoginController.class)
-          .put("storedToken", user.getToken());
-        logger.info("Remembering token: " + user.getToken());
+          .put("storedToken", token);
+        logger.info("Remembering token: " + token + " for email: " + email);
       } else
       {
         Preferences.userNodeForPackage(LoginController.class)
           .remove("storedToken");
         logger.info("Clearing stored token for email: " + email);
       }
-      eventBus.publish(new Events.UserAuthenticatedEvent(user));
+      eventBus.publish(
+        new Events.UserAuthenticatedEvent(
+          user, result.data().get("token").getAsString()));
     } catch (SQLException sqlExc)
     {
       eventBus.publish(

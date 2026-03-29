@@ -37,8 +37,8 @@ psql_java_type_map = {
     "uuid": "java.util.UUID",
 
     # json
-    "json": "String",
-    "jsonb": "String",
+    "json": "com.google.gson.JsonObject",
+    "jsonb": "com.google.gson.JsonObject",
 
     # arrays
     "ARRAY": "java.sql.Array",
@@ -127,7 +127,7 @@ def get_sql_enum_info(conn, schema: str, data_type: str) -> dict:
     return {
       "name": snake_to_pascal(row[0]),
       "schema": row[1],
-      "values": get_enum_values(data_type, schema)
+      "values": get_enum_values(conn, data_type, schema)
     }
 
 

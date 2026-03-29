@@ -6,7 +6,8 @@
   <property name="sql_test.dir" value="sql-test/" />
   <property name="fx.dir" value="lib/javafx-sdk-25.0.2/lib" />
 
-  <property name="schema_gen.script" value="schema-gen/gen_records.py" />
+  <property name="gen_records.script" value="schema-gen/gen_records.py" />
+  <property name="gen_functions.script" value="schema-gen/gen_functions.py" />
 
   <property name="main.class"
     value="com.unazed.LibraryManagement.LibraryManagement" />
@@ -18,7 +19,7 @@
 
   <target name="schema-gen">
     <exec executable="${python.bin}" failonerror="true">
-      <arg value="${schema_gen.script}" />
+      <arg value="${gen_records.script}" />
       <arg value="--output" />
       <arg value="${src.dir}/unazed/LibraryManagement/model/gen" />
       <arg value="--tables" />
@@ -32,13 +33,35 @@
       <arg value="--schema" />
       <arg value="library" />
     </exec>
+    <exec executable="${python.bin}" failonerror="true">
+      <arg value="${gen_functions.script}" />
+      <arg value="--schema" />
+      <arg value="library_api" />
+      <arg value="--output-file" />
+      <arg value="${src.dir}/unazed/LibraryManagement/DatabaseFunctions.java" />
+      <arg value="--output-types-dir" />
+      <arg value="${src.dir}/unazed/LibraryManagement/model/gen" />
+      <arg value="--class-name" />
+      <arg value="DatabaseFunctions" />
+    </exec>
+    <exec executable="${python.bin}" failonerror="true">
+      <arg value="${gen_functions.script}" />
+      <arg value="--schema" />
+      <arg value="library_internal" />
+      <arg value="--output-file" />
+      <arg value="${src.dir}/unazed/LibraryManagement/DatabaseInternalFunctions.java" />
+      <arg value="--output-types-dir" />
+      <arg value="${src.dir}/unazed/LibraryManagement/model/gen" />
+      <arg value="--class-name" />
+      <arg value="DatabaseInternalFunctions" />
+    </exec>
   </target> 
 
   <target name="build" depends="schema-gen">
     <mkdir dir="${build.dir}" />
     <fileset id="sources" dir="${src.dir}" includes="**/*.java" />
     <pathconvert property="src.files" refid="sources" pathsep=" " />
-    <javac destdir="${build.dir}" includeantruntime="false">
+    <javac destdir="${build.dir}" includeantruntime="false" debug="true">
       <compilerarg value="--module-path" />
       <compilerarg value="${fx.dir}" />
       <compilerarg value="--add-modules=javafx.controls,javafx.fxml" />

@@ -3,10 +3,10 @@ package com.unazed.LibraryManagement.controller;
 import com.unazed.LibraryManagement.EventBus;
 import com.unazed.LibraryManagement.Events;
 import com.unazed.LibraryManagement.ResourceLoader;
-import com.unazed.LibraryManagement.SqlInterface;
 import com.unazed.LibraryManagement.View;
 import com.unazed.LibraryManagement.ViewController;
-import com.unazed.LibraryManagement.model.User;
+import com.unazed.LibraryManagement.model.gen.UserRole;
+import com.unazed.LibraryManagement.model.gen.Users;
 
 import java.io.IOException;
 import java.util.logging.Level;
@@ -22,7 +22,7 @@ import javafx.scene.control.SplitPane;
 import javafx.scene.layout.StackPane;
 
 @ViewController.ViewName(View.MAIN)
-@ViewController.AllowedRoles({User.Role.Librarian, User.Role.Member})
+@ViewController.AllowedRoles({UserRole.LIBRARIAN, UserRole.MEMBER})
 public class MainController extends ViewController
 {
   @FXML private StackPane contentPane;
@@ -32,7 +32,8 @@ public class MainController extends ViewController
   private static final java.util.logging.Logger logger
     = Logger.getLogger(MainController.class.getName());
 
-  private User authenticatedUser;
+  private Users authenticatedUser;
+  private String userToken;
   private EventBus eventBus = EventBus.get();
 
   @FXML
@@ -53,10 +54,10 @@ public class MainController extends ViewController
   {
     if (authenticatedUser == null)
       throw new IllegalStateException("No user is currently authenticated");
-    logger.info("User signed out: " + authenticatedUser.getUsername());
+    logger.info("User signed out: " + authenticatedUser.username());
     eventBus.publish(new Events.StatusMessageEvent("Signed out successfully."));
     authenticatedUser = null;
-    SqlInterface.get().setSessionToken(null);
+    userToken = null;
     Preferences.userNodeForPackage(LoginController.class).remove("storedToken");
     switchTo(View.LOGIN);
   }
@@ -76,7 +77,7 @@ public class MainController extends ViewController
     if (authenticatedUser != null)
       throw new IllegalStateException("User is already authenticated");
     authenticatedUser = event.getUser();
-    SqlInterface.get().setSessionToken(authenticatedUser.getToken());
+    userToken = event.getUserToken();
     switchTo(View.DASHBOARD);
   }
 
@@ -144,14 +145,15 @@ public class MainController extends ViewController
          *     which user roles are allowed to access it.
          */
         if (!userAwareController.getAllowedRoles()
-          .contains(authenticatedUser.getRole()))
+          .contains(authenticatedUser.user_role()))
         {
           eventBus.publish(
             new Events.AlertEvent(AlertType.ERROR, "access.denied"));
           return;
         }
         userAwareController.setBoundUser(authenticatedUser);
-        userAwareController.whenUserAvailable(authenticatedUser);
+        userAwareController.setBoundUserToken(userToken);
+        userAwareController.whenUserAvailable(userToken);
       }
 
       if (!(root instanceof SplitPane))

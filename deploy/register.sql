@@ -52,9 +52,9 @@ BEGIN;
   RETURNS library_internal.result_type AS $$
   DECLARE
     m_pwd_hash  TEXT;
-    m_user_id 	INTEGER;
     m_token 	  TEXT;
     m_email	    TEXT;
+    m_user      library.Users%ROWTYPE;
   BEGIN
     IF p_email NOT LIKE '%@%.%' THEN
       RETURN library_internal.make_error_result(
@@ -69,7 +69,7 @@ BEGIN;
 	      email, username, user_role, user_status, password_hash)
       VALUES (
 	      m_email, p_username, 'member', 'active', m_pwd_hash)
-      RETURNING user_id INTO m_user_id;
+      RETURNING * INTO m_user;
     EXCEPTION
       WHEN unique_violation THEN
         RETURN library_internal.make_error_result(
@@ -78,19 +78,15 @@ BEGIN;
     
   m_token := sign(
     json_build_object(
-      'user_id', m_user_id,
-      'email', m_email,
-      'username', p_username,
-      'role', 'member'::library.user_role),
+      'user_id', m_user.user_id,
+      'username', m_user.username,
+      'email', m_user.email,
+      'user_role', m_user.user_role),
     library_internal.get_app_config_value('jwt_secret'),
     'HS256');
 
     RETURN library_internal.make_success_result(
-      json_build_object(
-        'token', m_token,
-        'username', p_username,
-        'email', m_email,
-        'role', 'member'::library.user_role));
+      to_jsonb(m_user) || jsonb_build_object('token', m_token));
   END;
   $$ LANGUAGE plpgsql SECURITY DEFINER;
 

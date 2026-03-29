@@ -14,12 +14,7 @@ BEGIN;
       RETURN m_auth_result;
     END IF;
 
-    SELECT true, NULL, jsonb_agg(jsonb_build_object(
-      'id', U.user_id,
-      'username', U.username,
-      'email', U.email,
-      'user_role', U.user_role
-    ))
+    SELECT true, NULL, jsonb_agg(to_jsonb(U))
     INTO m_result.success, m_result.error_code, m_result.data
     FROM library.Users U
     WHERE U.user_role = 'member'::library.user_role;

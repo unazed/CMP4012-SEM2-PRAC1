@@ -6,30 +6,71 @@
 
 package com.unazed.LibraryManagement.model.gen;
 
+import com.google.gson.JsonObject;
 import org.postgresql.util.PGobject;
 import java.sql.ResultSet;
+import com.unazed.LibraryManagement.util.GsonProvider;
+import com.google.gson.JsonParser;
+import com.google.gson.reflect.TypeToken;
+import java.util.List;
 import java.sql.SQLException;
 
 public record ResultType 
 (
 	boolean success,
-	String error_code,
-	String data
+	String errorCode,
+	JsonObject data
 )
 {
+	public ResultType 
+	(
+		boolean success, 
+		String errorCode, 
+		String data
+	)
+	{
+		this(success, errorCode, data == null ? null : JsonParser.parseString(data).getAsJsonObject());
+	}
+
+	public <T> T getDataAs(Class<T> clazz)
+	{
+		if (this.data == null)
+			return null;
+		return GsonProvider.get().fromJson(this.data, clazz);
+	}
+
+	public <T> List<T> getDataAsList(Class<T> clazz)
+	{
+		if (this.data == null)
+			return null;
+		return GsonProvider.get().fromJson(this.data, TypeToken.getParameterized(List.class, clazz).getType());
+	}
+
 	public static ResultType fromPGobject(PGobject pgObj) throws SQLException
 	{
 		String value = pgObj.getValue();
 		value = value.substring(1, value.length() - 1);
 		String[] parts = value.split(",", 3);
+
+		/* Boolean field: `success` */
 		boolean success = parts[0].equals("t");
-		String error_code = parts[1].isEmpty() ? null : parts[1];
+
+		/* Field: `error_code`@String */
+		String errorCode = parts[1].isEmpty() ? null : parts[1];
+
+		/* JSON field: `data` */
 		String data = parts[2].isEmpty() ? null : parts[2];
-		return new ResultType(success, error_code, data);
+		if (data != null && data.startsWith("\"") && data.endsWith("\""))
+			data = data.substring(1, data.length() - 1);
+
+		return new ResultType(success, errorCode, data);
 	}
 
 	public static ResultType fromResultSet(ResultSet rs) throws SQLException
 	{
-		return fromPGobject((PGobject) rs.getObject(1));
+		boolean success = rs.getBoolean("success");
+		String errorCode = rs.getString("error_code");
+		String data = rs.getString("data");
+		return new ResultType(success, errorCode, data);
 	}
 }

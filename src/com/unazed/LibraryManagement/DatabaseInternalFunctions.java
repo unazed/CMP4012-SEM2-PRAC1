@@ -6,6 +6,7 @@
 
 package com.unazed.LibraryManagement;
 
+import com.google.gson.JsonObject;
 import com.unazed.LibraryManagement.SqlInterface;
 import com.unazed.LibraryManagement.model.gen.ResultType;
 import java.sql.*;
@@ -31,7 +32,7 @@ public class DatabaseInternalFunctions
 			ResultSet rs = stmt.executeQuery();
 			if (!rs.next())
 				throw new SQLException("No result returned from function 'make_success_result'");
-			return (ResultType) rs.getObject(1);
+			return ResultType.fromResultSet(rs);
 		} catch (SQLException sqlExc)
 		{
 			logger.log(Level.SEVERE, "Error executing function 'make_success_result'", sqlExc);
@@ -50,7 +51,7 @@ public class DatabaseInternalFunctions
 			ResultSet rs = stmt.executeQuery();
 			if (!rs.next())
 				throw new SQLException("No result returned from function 'make_error_result'");
-			return (ResultType) rs.getObject(1);
+			return ResultType.fromResultSet(rs);
 		} catch (SQLException sqlExc)
 		{
 			logger.log(Level.SEVERE, "Error executing function 'make_error_result'", sqlExc);
@@ -96,7 +97,7 @@ public class DatabaseInternalFunctions
 		}
 	}
 
-	public static String decodeToken(
+	public static JsonObject decodeToken(
 		String pToken
 	) throws SQLException
 	{
@@ -107,7 +108,7 @@ public class DatabaseInternalFunctions
 			ResultSet rs = stmt.executeQuery();
 			if (!rs.next())
 				throw new SQLException("No result returned from function 'decode_token'");
-			return (String) rs.getObject(1);
+			return (JsonObject) rs.getObject(1);
 		} catch (SQLException sqlExc)
 		{
 			logger.log(Level.SEVERE, "Error executing function 'decode_token'", sqlExc);
@@ -145,7 +146,7 @@ public class DatabaseInternalFunctions
 			ResultSet rs = stmt.executeQuery();
 			if (!rs.next())
 				throw new SQLException("No result returned from function 'is_valid_session'");
-			return (ResultType) rs.getObject(1);
+			return ResultType.fromResultSet(rs);
 		} catch (SQLException sqlExc)
 		{
 			logger.log(Level.SEVERE, "Error executing function 'is_valid_session'", sqlExc);
@@ -164,7 +165,7 @@ public class DatabaseInternalFunctions
 			ResultSet rs = stmt.executeQuery();
 			if (!rs.next())
 				throw new SQLException("No result returned from function 'is_librarian'");
-			return (ResultType) rs.getObject(1);
+			return ResultType.fromResultSet(rs);
 		} catch (SQLException sqlExc)
 		{
 			logger.log(Level.SEVERE, "Error executing function 'is_librarian'", sqlExc);
@@ -399,7 +400,7 @@ public class DatabaseInternalFunctions
 			ResultSet rs = stmt.executeQuery();
 			if (!rs.next())
 				throw new SQLException("No result returned from function 'get_qty_physical_available'");
-			return (ResultType) rs.getObject(1);
+			return ResultType.fromResultSet(rs);
 		} catch (SQLException sqlExc)
 		{
 			logger.log(Level.SEVERE, "Error executing function 'get_qty_physical_available'", sqlExc);

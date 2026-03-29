@@ -6,18 +6,20 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 import java.util.List;
 
-import com.unazed.LibraryManagement.model.User;
+import com.unazed.LibraryManagement.model.gen.UserRole;
+import com.unazed.LibraryManagement.model.gen.Users;
 
 public class ViewController
 {
   public static class UserAwareController extends ViewController
   {
-    private User boundUser;
+    private Users boundUser;
+    private String boundUserToken;
 
-    public void whenUserAvailable(User user)
+    public void whenUserAvailable(String userToken)
     {}
 
-    public List<User.Role> getAllowedRoles()
+    public List<UserRole> getAllowedRoles()
     {
       AllowedRoles annotation
         = this.getClass().getAnnotation(AllowedRoles.class);
@@ -28,14 +30,24 @@ public class ViewController
       return List.of(annotation.value());
     }
 
-    public final void setBoundUser(User user)
+    public final void setBoundUser(Users user)
     {
       this.boundUser = user;
     }
 
-    public final User getBoundUser()
+    public final Users getBoundUser()
     {
       return boundUser;
+    }
+
+    public final void setBoundUserToken(String userToken)
+    {
+      this.boundUserToken = userToken;
+    }
+
+    public final String getBoundUserToken()
+    {
+      return boundUserToken;
     }
   }
 
@@ -43,7 +55,7 @@ public class ViewController
   @Target(ElementType.TYPE)
   public @interface AllowedRoles
   {
-    User.Role[] value();
+    UserRole[] value();
   }
 
   @Retention(RetentionPolicy.RUNTIME)

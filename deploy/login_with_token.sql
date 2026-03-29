@@ -13,13 +13,7 @@ BEGIN;
       RETURN m_auth_result;
     END IF;
 
-    SELECT true, NULL, jsonb_build_object(
-      'user_id', u.user_id,
-      'email', u.email,
-      'username', u.username,
-      'role', u.user_role,
-      'token', p_token
-    )
+    SELECT true, NULL, to_jsonb(u) || jsonb_build_object('token', p_token) 
     INTO m_result
     FROM library.Users u
     WHERE u.user_id = (m_auth_result.data->>'user_id')::INTEGER;

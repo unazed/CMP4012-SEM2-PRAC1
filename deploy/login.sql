@@ -7,11 +7,7 @@ BEGIN;
   DECLARE
     m_token	      TEXT;
     m_email 	    TEXT;
-    m_user_id 	  INTEGER;
-    m_pwd_hash 	  TEXT;
-    m_user_status library.user_status;
-    m_user_role   library.user_role;
-    m_username 	  TEXT;
+    m_user        library.Users%ROWTYPE;
   BEGIN
     IF p_email NOT LIKE '%@%.%' THEN
       RETURN library_internal.make_error_result(
@@ -20,37 +16,32 @@ BEGIN;
     
     m_email := library_internal.normalize_email(p_email);
 
-    SELECT user_id, username, password_hash, user_status, user_role
-    INTO m_user_id, m_username, m_pwd_hash, m_user_status, m_user_role
-    FROM library.Users 
+    SELECT * INTO m_user
+    FROM library.Users U 
     WHERE email = m_email;
 
     IF NOT FOUND THEN
       RETURN library_internal.make_error_result(
 	      'login_invalid'::library_internal.auth_error_code);
-    ELSIF crypt(p_password, m_pwd_hash) <> m_pwd_hash THEN
+    ELSIF crypt(p_password, m_user.password_hash) <> m_user.password_hash THEN
       RETURN library_internal.make_error_result(
 	      'login_invalid'::library_internal.auth_error_code);
-    ELSIF m_user_status <> 'active'::library.user_status THEN
+    ELSIF m_user.user_status <> 'active'::library.user_status THEN
       RETURN library_internal.make_error_result(
 	      'account_disabled'::library_internal.auth_error_code);
     END IF;
 
   m_token := sign(
     json_build_object(
-      'user_id', m_user_id,
-      'username', m_username,
-      'email', m_email,
-      'role', m_user_role),
+      'user_id', m_user.user_id,
+      'username', m_user.username,
+      'email', m_user.email,
+      'user_role', m_user.user_role),
     library_internal.get_app_config_value('jwt_secret'),
     'HS256');
 
   RETURN library_internal.make_success_result(
-    json_build_object(
-      'token', m_token,
-      'username', m_username,
-      'role', m_user_role,
-      'email', m_email));
+    to_jsonb(m_user) || jsonb_build_object('token', m_token));
   END;
   $$ LANGUAGE plpgsql SECURITY DEFINER;
 

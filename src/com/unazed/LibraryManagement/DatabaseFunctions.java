@@ -34,7 +34,7 @@ public class DatabaseFunctions
 			ResultSet rs = stmt.executeQuery();
 			if (!rs.next())
 				throw new SQLException("No result returned from function 'register_user'");
-			return (ResultType) rs.getObject(1);
+			return ResultType.fromResultSet(rs);
 		} catch (SQLException sqlExc)
 		{
 			logger.log(Level.SEVERE, "Error executing function 'register_user'", sqlExc);
@@ -54,7 +54,7 @@ public class DatabaseFunctions
 			ResultSet rs = stmt.executeQuery();
 			if (!rs.next())
 				throw new SQLException("No result returned from function 'login_user'");
-			return (ResultType) rs.getObject(1);
+			return ResultType.fromResultSet(rs);
 		} catch (SQLException sqlExc)
 		{
 			logger.log(Level.SEVERE, "Error executing function 'login_user'", sqlExc);
@@ -78,7 +78,7 @@ public class DatabaseFunctions
 			ResultSet rs = stmt.executeQuery();
 			if (!rs.next())
 				throw new SQLException("No result returned from function 'add_book'");
-			return (ResultType) rs.getObject(1);
+			return ResultType.fromResultSet(rs);
 		} catch (SQLException sqlExc)
 		{
 			logger.log(Level.SEVERE, "Error executing function 'add_book'", sqlExc);
@@ -97,7 +97,7 @@ public class DatabaseFunctions
 			ResultSet rs = stmt.executeQuery();
 			if (!rs.next())
 				throw new SQLException("No result returned from function 'find_book_by_isbn'");
-			return (ResultType) rs.getObject(1);
+			return ResultType.fromResultSet(rs);
 		} catch (SQLException sqlExc)
 		{
 			logger.log(Level.SEVERE, "Error executing function 'find_book_by_isbn'", sqlExc);
@@ -118,32 +118,10 @@ public class DatabaseFunctions
 			ResultSet rs = stmt.executeQuery();
 			if (!rs.next())
 				throw new SQLException("No result returned from function 'set_digital_book_url'");
-			return (ResultType) rs.getObject(1);
+			return ResultType.fromResultSet(rs);
 		} catch (SQLException sqlExc)
 		{
 			logger.log(Level.SEVERE, "Error executing function 'set_digital_book_url'", sqlExc);
-			throw sqlExc;
-		}
-	}
-
-	public static ResultType getQtyPhysicalAvailable(
-		String pToken, String pIsbn, OffsetDateTime pFrom, OffsetDateTime pTo
-	) throws SQLException
-	{
-		try (PreparedStatement stmt = conn.prepareStatement(
-			"SELECT * from library_api.get_qty_physical_available(?, ?, ?, ?)"))
-		{
-			stmt.setObject(1, pToken);
-			stmt.setObject(2, pIsbn);
-			stmt.setObject(3, pFrom);
-			stmt.setObject(4, pTo);
-			ResultSet rs = stmt.executeQuery();
-			if (!rs.next())
-				throw new SQLException("No result returned from function 'get_qty_physical_available'");
-			return (ResultType) rs.getObject(1);
-		} catch (SQLException sqlExc)
-		{
-			logger.log(Level.SEVERE, "Error executing function 'get_qty_physical_available'", sqlExc);
 			throw sqlExc;
 		}
 	}
@@ -164,7 +142,7 @@ public class DatabaseFunctions
 			ResultSet rs = stmt.executeQuery();
 			if (!rs.next())
 				throw new SQLException("No result returned from function 'update_book'");
-			return (ResultType) rs.getObject(1);
+			return ResultType.fromResultSet(rs);
 		} catch (SQLException sqlExc)
 		{
 			logger.log(Level.SEVERE, "Error executing function 'update_book'", sqlExc);
@@ -184,10 +162,32 @@ public class DatabaseFunctions
 			ResultSet rs = stmt.executeQuery();
 			if (!rs.next())
 				throw new SQLException("No result returned from function 'remove_book'");
-			return (ResultType) rs.getObject(1);
+			return ResultType.fromResultSet(rs);
 		} catch (SQLException sqlExc)
 		{
 			logger.log(Level.SEVERE, "Error executing function 'remove_book'", sqlExc);
+			throw sqlExc;
+		}
+	}
+
+	public static ResultType getQtyPhysicalAvailable(
+		String pToken, String pIsbn, OffsetDateTime pFrom, OffsetDateTime pTo
+	) throws SQLException
+	{
+		try (PreparedStatement stmt = conn.prepareStatement(
+			"SELECT * from library_api.get_qty_physical_available(?, ?, ?, ?)"))
+		{
+			stmt.setObject(1, pToken);
+			stmt.setObject(2, pIsbn);
+			stmt.setObject(3, pFrom);
+			stmt.setObject(4, pTo);
+			ResultSet rs = stmt.executeQuery();
+			if (!rs.next())
+				throw new SQLException("No result returned from function 'get_qty_physical_available'");
+			return ResultType.fromResultSet(rs);
+		} catch (SQLException sqlExc)
+		{
+			logger.log(Level.SEVERE, "Error executing function 'get_qty_physical_available'", sqlExc);
 			throw sqlExc;
 		}
 	}
@@ -208,7 +208,7 @@ public class DatabaseFunctions
 			ResultSet rs = stmt.executeQuery();
 			if (!rs.next())
 				throw new SQLException("No result returned from function 'create_physical_loan'");
-			return (ResultType) rs.getObject(1);
+			return ResultType.fromResultSet(rs);
 		} catch (SQLException sqlExc)
 		{
 			logger.log(Level.SEVERE, "Error executing function 'create_physical_loan'", sqlExc);
@@ -228,7 +228,7 @@ public class DatabaseFunctions
 			ResultSet rs = stmt.executeQuery();
 			if (!rs.next())
 				throw new SQLException("No result returned from function 'get_physical_loans'");
-			return (ResultType) rs.getObject(1);
+			return ResultType.fromResultSet(rs);
 		} catch (SQLException sqlExc)
 		{
 			logger.log(Level.SEVERE, "Error executing function 'get_physical_loans'", sqlExc);
@@ -248,7 +248,7 @@ public class DatabaseFunctions
 			ResultSet rs = stmt.executeQuery();
 			if (!rs.next())
 				throw new SQLException("No result returned from function 'get_physical_loan_by_id'");
-			return (ResultType) rs.getObject(1);
+			return ResultType.fromResultSet(rs);
 		} catch (SQLException sqlExc)
 		{
 			logger.log(Level.SEVERE, "Error executing function 'get_physical_loan_by_id'", sqlExc);
@@ -268,7 +268,7 @@ public class DatabaseFunctions
 			ResultSet rs = stmt.executeQuery();
 			if (!rs.next())
 				throw new SQLException("No result returned from function 'get_digital_loans'");
-			return (ResultType) rs.getObject(1);
+			return ResultType.fromResultSet(rs);
 		} catch (SQLException sqlExc)
 		{
 			logger.log(Level.SEVERE, "Error executing function 'get_digital_loans'", sqlExc);
@@ -291,7 +291,7 @@ public class DatabaseFunctions
 			ResultSet rs = stmt.executeQuery();
 			if (!rs.next())
 				throw new SQLException("No result returned from function 'update_physical_loan'");
-			return (ResultType) rs.getObject(1);
+			return ResultType.fromResultSet(rs);
 		} catch (SQLException sqlExc)
 		{
 			logger.log(Level.SEVERE, "Error executing function 'update_physical_loan'", sqlExc);
@@ -311,7 +311,7 @@ public class DatabaseFunctions
 			ResultSet rs = stmt.executeQuery();
 			if (!rs.next())
 				throw new SQLException("No result returned from function 'remove_physical_loan'");
-			return (ResultType) rs.getObject(1);
+			return ResultType.fromResultSet(rs);
 		} catch (SQLException sqlExc)
 		{
 			logger.log(Level.SEVERE, "Error executing function 'remove_physical_loan'", sqlExc);
@@ -331,7 +331,7 @@ public class DatabaseFunctions
 			ResultSet rs = stmt.executeQuery();
 			if (!rs.next())
 				throw new SQLException("No result returned from function 'remove_digital_loan'");
-			return (ResultType) rs.getObject(1);
+			return ResultType.fromResultSet(rs);
 		} catch (SQLException sqlExc)
 		{
 			logger.log(Level.SEVERE, "Error executing function 'remove_digital_loan'", sqlExc);
@@ -350,7 +350,7 @@ public class DatabaseFunctions
 			ResultSet rs = stmt.executeQuery();
 			if (!rs.next())
 				throw new SQLException("No result returned from function 'get_members'");
-			return (ResultType) rs.getObject(1);
+			return ResultType.fromResultSet(rs);
 		} catch (SQLException sqlExc)
 		{
 			logger.log(Level.SEVERE, "Error executing function 'get_members'", sqlExc);
@@ -369,7 +369,7 @@ public class DatabaseFunctions
 			ResultSet rs = stmt.executeQuery();
 			if (!rs.next())
 				throw new SQLException("No result returned from function 'get_token_information'");
-			return (ResultType) rs.getObject(1);
+			return ResultType.fromResultSet(rs);
 		} catch (SQLException sqlExc)
 		{
 			logger.log(Level.SEVERE, "Error executing function 'get_token_information'", sqlExc);

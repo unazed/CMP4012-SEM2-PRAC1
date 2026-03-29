@@ -6,8 +6,9 @@ import java.util.logging.Logger;
 import com.unazed.LibraryManagement.LockableView;
 import com.unazed.LibraryManagement.View;
 import com.unazed.LibraryManagement.ViewController;
-import com.unazed.LibraryManagement.model.User;
 import com.unazed.LibraryManagement.controller.DashboardController.DashboardEvents.AuxDataReceiver;
+import com.unazed.LibraryManagement.model.gen.UserRole;
+import com.unazed.LibraryManagement.model.gen.Users;
 
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
@@ -17,10 +18,10 @@ import javafx.scene.control.ListView;
 import javafx.scene.control.TextField;
 
 @ViewController.ViewName(View.DASHBOARD_VIEW_MEMBERS_DETAIL)
-@ViewController.AllowedRoles({User.Role.Librarian})
+@ViewController.AllowedRoles({UserRole.LIBRARIAN})
 public class MemberDetailController
   extends ViewController.UserAwareController
-  implements AuxDataReceiver<User>
+  implements AuxDataReceiver<Users>
 {
   private static final Logger logger = Logger.getLogger(
     MemberDetailController.class.getName());
@@ -58,10 +59,10 @@ public class MemberDetailController
   }
 
   @Override
-  public void receiveAuxData(User data)
+  public void receiveAuxData(Users data)
   {
-    tfEmail.setText(data.getEmail());
-    tfUsername.setText(data.getUsername());
+    tfEmail.setText(data.email());
+    tfUsername.setText(data.username());
     
   }
 }

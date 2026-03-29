@@ -2,15 +2,16 @@ package com.unazed.LibraryManagement.controller;
 
 import java.sql.SQLException;
 import java.util.List;
+import java.util.logging.Logger;
 
+import com.unazed.LibraryManagement.DatabaseFunctions;
 import com.unazed.LibraryManagement.EventBus;
 import com.unazed.LibraryManagement.Events;
 import com.unazed.LibraryManagement.LockableView;
-import com.unazed.LibraryManagement.SqlApiResult;
-import com.unazed.LibraryManagement.SqlInterface;
 import com.unazed.LibraryManagement.View;
 import com.unazed.LibraryManagement.ViewController;
-import com.unazed.LibraryManagement.model.User;
+import com.unazed.LibraryManagement.model.gen.ResultType;
+import com.unazed.LibraryManagement.model.gen.Users;
 
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
@@ -21,6 +22,9 @@ import javafx.scene.control.Alert.AlertType;
 @ViewController.ViewName(View.REGISTER)
 public class RegisterController extends ViewController
 {
+  private final Logger logger = Logger.getLogger(
+    RegisterController.class.getName());
+
   @FXML private TextField tfRegisterEmail;
   @FXML private TextField tfRegisterUsername;
   @FXML private PasswordField tfRegisterPassword;
@@ -81,17 +85,23 @@ public class RegisterController extends ViewController
       return;
     }
 
-    try (SqlApiResult<User> result
-      = SqlInterface.get().register(email, username, password))
+    try
     {
-      if (!result.isSuccess())
+      ResultType result = DatabaseFunctions.registerUser(
+        email, username, password);
+      if (!result.success())
       {
         eventBus.publish(new Events.StatusMessageEvent(
-          "Registration failed: " + result.getErrorCode()));
+          "Registration failed: " + result.errorCode()));
         lockableView.unlockView();
         return;
       }
-      eventBus.publish(new Events.UserAuthenticatedEvent(result.getData()));
+      logger.info("result: " + result.data());
+
+      eventBus.publish(
+        new Events.UserAuthenticatedEvent(
+          result.getDataAs(Users.class),
+          result.data().get("token").getAsString()));
     } catch (SQLException exc) {
       eventBus.publish(
         new Events.AlertEvent(AlertType.ERROR, "db.connection.error"));

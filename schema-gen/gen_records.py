@@ -20,8 +20,7 @@ def write_record_to_file(
       f.write(f"import {imp};\n")
     if imports:
       f.write("\n")
-    f.write("public record "
-            f"{os.path.splitext(os.path.basename(path))[0]}(\n")
+    f.write(f"public record {os.path.splitext(os.path.basename(path))[0]}(\n")
     for i, (field_name, field_type) in enumerate(record.items()):
       comma = ',' if i < len(record) - 1 else ''
       f.write(f"\t{field_type} {field_name}{comma}\n")
@@ -33,10 +32,33 @@ def write_enum_to_file(
   with open(path, 'w') as f:
     f.write(PREAMBLE)
     f.write(f"package {package};\n\n")
-    f.write(f"public enum {enum_name} {{\n")
+    f.write(f"public enum {enum_name}\n{{\n")
     for i, value in enumerate(values):
-      comma = ',' if i < len(values) - 1 else ''
-      f.write(f"\t{value.upper()}{comma}\n")
+      comma = ',' if i < len(values) - 1 else ';'
+      f.write(f"\t{value.upper()}(\"{value}\"){comma}\n")
+    f.write(f"""
+\tprivate final String value;
+
+\t{enum_name}(String value)
+\t{{
+\t\tthis.value = value;
+\t}}
+
+\tpublic String value()
+\t{{
+\t\treturn this.value;
+\t}}
+
+\tpublic static {enum_name} fromValue(String value)
+\t{{
+\t\tfor ({enum_name} e : values())
+\t\t{{
+\t\t\tif (e.value.equalsIgnoreCase(value))
+\t\t\t\treturn e;
+\t\t}}
+\t\tthrow new IllegalArgumentException("Unknown value: " + value);
+\t}}
+""")
     f.write("}\n")
 
 def main(

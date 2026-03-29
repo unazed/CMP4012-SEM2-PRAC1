@@ -14,7 +14,7 @@ import com.unazed.LibraryManagement.View;
 import com.unazed.LibraryManagement.ViewController;
 import com.unazed.LibraryManagement.controller.DashboardController.DashboardEvents.AuxDataReceiver;
 import com.unazed.LibraryManagement.controller.dashboard.MemberViewController;
-import com.unazed.LibraryManagement.model.User;
+import com.unazed.LibraryManagement.model.gen.UserRole;
 
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -25,7 +25,7 @@ import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
 
 @ViewController.ViewName(View.DASHBOARD)
-@ViewController.AllowedRoles({User.Role.Librarian, User.Role.Member})
+@ViewController.AllowedRoles({UserRole.LIBRARIAN, UserRole.MEMBER})
 public class DashboardController extends ViewController.UserAwareController
 {
   public static class DashboardEvents
@@ -87,7 +87,7 @@ public class DashboardController extends ViewController.UserAwareController
       "View all members", MemberViewController.class);
 
   @Override
-  public final void whenUserAvailable(User user)
+  public final void whenUserAvailable(String userToken)
   {
     for (
       Entry<String, Class<? extends ViewController.UserAwareController>> entry
@@ -99,7 +99,7 @@ public class DashboardController extends ViewController.UserAwareController
         throw new IllegalStateException(
           "Controller class " + entry.getValue().getName()
           + " is missing @AllowedRoles annotation");
-      if (List.of(annotation.value()).contains(user.getRole()))
+      if (List.of(annotation.value()).contains(getBoundUser().user_role()))
         dashboardListView.getItems().add(entry.getKey());
     }
 
@@ -110,7 +110,7 @@ public class DashboardController extends ViewController.UserAwareController
       DashboardEvents.DashboardAuxSwapEvent.class,
       e -> dashboardAuxSwapEventHandler(e));
 
-    lblUsername.setText(getBoundUser().getUsername());
+    lblUsername.setText(getBoundUser().username());
     dashboardListView
       .getSelectionModel()
       .selectedItemProperty()
@@ -156,7 +156,7 @@ public class DashboardController extends ViewController.UserAwareController
           + " does not extend UserAwareController");
       }
       userAwareController.setBoundUser(getBoundUser());
-      userAwareController.whenUserAvailable(getBoundUser());
+      userAwareController.whenUserAvailable(getBoundUserToken());
       spDashboardContent.setContent(root);
     } catch (IOException ioExc)
     {
@@ -180,7 +180,8 @@ public class DashboardController extends ViewController.UserAwareController
       if (controller instanceof UserAwareController userAwareController)
       {
         userAwareController.setBoundUser(getBoundUser());
-        userAwareController.whenUserAvailable(getBoundUser()); 
+        userAwareController.setBoundUserToken(getBoundUserToken());
+        userAwareController.whenUserAvailable(getBoundUserToken()); 
       }
 
       if (controller instanceof AuxDataReceiver auxDataReceiver)

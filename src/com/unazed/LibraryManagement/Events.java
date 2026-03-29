@@ -1,6 +1,8 @@
 package com.unazed.LibraryManagement;
 
-import com.unazed.LibraryManagement.model.User;
+import java.util.logging.Logger;
+
+import com.unazed.LibraryManagement.model.gen.Users;
 
 import javafx.scene.control.Alert.AlertType;
 
@@ -23,16 +25,28 @@ public class Events
 
   public static class UserAuthenticatedEvent
   {
-    private final User user;
+    private static final Logger logger = Logger.getLogger(
+      UserAuthenticatedEvent.class.getName());
 
-    public UserAuthenticatedEvent(User user)
+    private final Users user;
+    private final String userToken;
+
+    public UserAuthenticatedEvent(Users user, String userToken)
     {
       this.user = user;
+      logger.info("user authenticated: " + user.username() + " (ID: " + user.user_id() + ")");
+      logger.info("role: " + user.user_role());
+      this.userToken = userToken;
     }
 
-    public User getUser()
+    public Users getUser()
     {
       return user;
+    }
+
+    public String getUserToken()
+    {
+      return userToken;
     }
   }
 
