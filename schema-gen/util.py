@@ -37,8 +37,8 @@ psql_java_type_map = {
     "uuid": "java.util.UUID",
 
     # json
-    "json": "com.google.gson.JsonObject",
-    "jsonb": "com.google.gson.JsonObject",
+    "json": "com.google.gson.JsonElement",
+    "jsonb": "com.google.gson.JsonElement",
 
     # arrays
     "ARRAY": "java.sql.Array",

@@ -110,7 +110,7 @@ public class LoginController extends ViewController
       Users user = result.getDataAs(Users.class);
       if (cbRememberLogin.isSelected())
       {
-        String token = result.data().get("token").getAsString();
+        String token = result.getDataField("token").getAsString();
         Preferences.userNodeForPackage(LoginController.class)
           .put("storedToken", token);
         logger.info("Remembering token: " + token + " for email: " + email);
@@ -122,7 +122,7 @@ public class LoginController extends ViewController
       }
       eventBus.publish(
         new Events.UserAuthenticatedEvent(
-          user, result.data().get("token").getAsString()));
+          user, result.getDataField("token").getAsString()));
     } catch (SQLException sqlExc)
     {
       eventBus.publish(

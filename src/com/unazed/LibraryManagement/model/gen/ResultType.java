@@ -6,7 +6,7 @@
 
 package com.unazed.LibraryManagement.model.gen;
 
-import com.google.gson.JsonObject;
+import com.google.gson.JsonElement;
 import org.postgresql.util.PGobject;
 import java.sql.ResultSet;
 import com.unazed.LibraryManagement.util.GsonProvider;
@@ -19,7 +19,7 @@ public record ResultType
 (
 	boolean success,
 	String errorCode,
-	JsonObject data
+	JsonElement data
 )
 {
 	public ResultType 
@@ -29,7 +29,7 @@ public record ResultType
 		String data
 	)
 	{
-		this(success, errorCode, data == null ? null : JsonParser.parseString(data).getAsJsonObject());
+		this(success, errorCode, data == null ? null : JsonParser.parseString(data));
 	}
 
 	public <T> T getDataAs(Class<T> clazz)
@@ -44,6 +44,13 @@ public record ResultType
 		if (this.data == null)
 			return null;
 		return GsonProvider.get().fromJson(this.data, TypeToken.getParameterized(List.class, clazz).getType());
+	}
+
+	public JsonElement getDataField(String fieldName)
+	{
+		if (this.data == null)
+			return null;
+		return this.data.getAsJsonObject().get(fieldName);
 	}
 
 	public static ResultType fromPGobject(PGobject pgObj) throws SQLException

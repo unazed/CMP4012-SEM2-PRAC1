@@ -28,7 +28,7 @@ def generate_composite_parser(
         f"/* Int field: `{attname}` */",
         f'int {snake_to_camel(attname)} = parts[{i}].isEmpty() ? 0 : Integer.parseInt(parts[{i}]);\n'
       ])
-    elif java_type == "com.google.gson.JsonObject":
+    elif java_type == "com.google.gson.JsonElement":
       parse_lines.extend([
         f"/* JSON field: `{attname}` */",
         f"String {snake_to_camel(attname)} = parts[{i}].isEmpty() ? null : parts[{i}];",
@@ -70,7 +70,7 @@ def generate_composite_type(
 
     json_fields = [
       field for field in fields.items()
-      if field[1] == "com.google.gson.JsonObject"
+      if field[1] == "com.google.gson.JsonElement"
     ]
     if json_fields:
       f.write(f"import {gson_provider_package};\n")
@@ -91,14 +91,14 @@ def generate_composite_type(
     if json_fields:
       f.write(f"\tpublic {class_name} " + "\n\t(\n")
       for i, (field_name, field_type) in enumerate(fields.items()):
-        if field_type == "com.google.gson.JsonObject":
+        if field_type == "com.google.gson.JsonElement":
           f.write(f"\t\tString {snake_to_camel(field_name)}{', ' if i < len(fields) - 1 else ''}\n")
         else:
           f.write(f"\t\t{short_type_name(field_type)} {snake_to_camel(field_name)}{', ' if i < len(fields) - 1 else ''}\n")
       f.write("\t)\n\t{\n\t\tthis(")
       for i, (field_name, field_type) in enumerate(fields.items()):
-        if field_type == "com.google.gson.JsonObject":
-          f.write(f"{snake_to_camel(field_name)} == null ? null : JsonParser.parseString({snake_to_camel(field_name)}).getAsJsonObject(){', ' if i < len(fields) - 1 else ''}")
+        if field_type == "com.google.gson.JsonElement":
+          f.write(f"{snake_to_camel(field_name)} == null ? null : JsonParser.parseString({snake_to_camel(field_name)}){', ' if i < len(fields) - 1 else ''}")
         else:
           f.write(f"{snake_to_camel(field_name)}{', ' if i < len(fields) - 1 else ''}")
       f.write(");\n")
@@ -111,6 +111,11 @@ def generate_composite_type(
         f.write(f"\tpublic <T> List<T> get{snake_to_pascal(field_name)}AsList(Class<T> clazz)\n\t{{\n")
         f.write(f"\t\tif (this.{snake_to_camel(field_name)} == null)\n\t\t\treturn null;\n")
         f.write(f"\t\treturn GsonProvider.get().fromJson(this.{snake_to_camel(field_name)}, TypeToken.getParameterized(List.class, clazz).getType());\n")
+        f.write("\t}\n\n")
+        f.write(f"\tpublic JsonElement get{snake_to_pascal(field_name)}Field(String fieldName)\n\t{{\n")
+        f.write(f"\t\tif (this.{snake_to_camel(field_name)} == null)\n")
+        f.write(f"\t\t\treturn null;\n")
+        f.write(f"\t\treturn this.{snake_to_camel(field_name)}.getAsJsonObject().get(fieldName);\n")
         f.write("\t}\n\n")
 
     # Static factory methods
@@ -126,7 +131,7 @@ def generate_composite_type(
 \tpublic static {class_name} fromResultSet(ResultSet rs) throws SQLException
 \t{{\n""")
     for i, (field_name, field_type) in enumerate(fields.items()):
-      if field_type == "com.google.gson.JsonObject":
+      if field_type == "com.google.gson.JsonElement":
         field_type = "String"
       f.write(f'\t\t{short_type_name(field_type)} {snake_to_camel(field_name)} = rs.get{snake_to_pascal(short_type_name(field_type))}("{field_name}");\n')
     f.write(f"\t\treturn new {class_name}(")

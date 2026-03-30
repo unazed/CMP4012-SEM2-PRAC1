@@ -62,6 +62,69 @@ public class DatabaseFunctions
 		}
 	}
 
+	public static ResultType updatePhysicalLoan(
+		String pToken, int pLoanId, OffsetDateTime pLoanDate, OffsetDateTime pLoanReturnDate, boolean pLoanReturned
+	) throws SQLException
+	{
+		try (PreparedStatement stmt = conn.prepareStatement(
+			"SELECT * from library_api.update_physical_loan(?, ?, ?, ?, ?)"))
+		{
+			stmt.setObject(1, pToken);
+			stmt.setObject(2, pLoanId);
+			stmt.setObject(3, pLoanDate);
+			stmt.setObject(4, pLoanReturnDate);
+			stmt.setObject(5, pLoanReturned);
+			ResultSet rs = stmt.executeQuery();
+			if (!rs.next())
+				throw new SQLException("No result returned from function 'update_physical_loan'");
+			return ResultType.fromResultSet(rs);
+		} catch (SQLException sqlExc)
+		{
+			logger.log(Level.SEVERE, "Error executing function 'update_physical_loan'", sqlExc);
+			throw sqlExc;
+		}
+	}
+
+	public static ResultType removePhysicalLoan(
+		String pToken, int pLoanId
+	) throws SQLException
+	{
+		try (PreparedStatement stmt = conn.prepareStatement(
+			"SELECT * from library_api.remove_physical_loan(?, ?)"))
+		{
+			stmt.setObject(1, pToken);
+			stmt.setObject(2, pLoanId);
+			ResultSet rs = stmt.executeQuery();
+			if (!rs.next())
+				throw new SQLException("No result returned from function 'remove_physical_loan'");
+			return ResultType.fromResultSet(rs);
+		} catch (SQLException sqlExc)
+		{
+			logger.log(Level.SEVERE, "Error executing function 'remove_physical_loan'", sqlExc);
+			throw sqlExc;
+		}
+	}
+
+	public static ResultType removeDigitalLoan(
+		String pToken, int pLoanId
+	) throws SQLException
+	{
+		try (PreparedStatement stmt = conn.prepareStatement(
+			"SELECT * from library_api.remove_digital_loan(?, ?)"))
+		{
+			stmt.setObject(1, pToken);
+			stmt.setObject(2, pLoanId);
+			ResultSet rs = stmt.executeQuery();
+			if (!rs.next())
+				throw new SQLException("No result returned from function 'remove_digital_loan'");
+			return ResultType.fromResultSet(rs);
+		} catch (SQLException sqlExc)
+		{
+			logger.log(Level.SEVERE, "Error executing function 'remove_digital_loan'", sqlExc);
+			throw sqlExc;
+		}
+	}
+
 	public static ResultType addBook(
 		String pToken, String pIsbn, String pName, LocalDate pPublishDate, int pQuantity, boolean pHasDigital
 	) throws SQLException
@@ -170,6 +233,25 @@ public class DatabaseFunctions
 		}
 	}
 
+	public static ResultType getMembers(
+		String pToken
+	) throws SQLException
+	{
+		try (PreparedStatement stmt = conn.prepareStatement(
+			"SELECT * from library_api.get_members(?)"))
+		{
+			stmt.setObject(1, pToken);
+			ResultSet rs = stmt.executeQuery();
+			if (!rs.next())
+				throw new SQLException("No result returned from function 'get_members'");
+			return ResultType.fromResultSet(rs);
+		} catch (SQLException sqlExc)
+		{
+			logger.log(Level.SEVERE, "Error executing function 'get_members'", sqlExc);
+			throw sqlExc;
+		}
+	}
+
 	public static ResultType getQtyPhysicalAvailable(
 		String pToken, String pIsbn, OffsetDateTime pFrom, OffsetDateTime pTo
 	) throws SQLException
@@ -272,88 +354,6 @@ public class DatabaseFunctions
 		} catch (SQLException sqlExc)
 		{
 			logger.log(Level.SEVERE, "Error executing function 'get_digital_loans'", sqlExc);
-			throw sqlExc;
-		}
-	}
-
-	public static ResultType updatePhysicalLoan(
-		String pToken, int pLoanId, OffsetDateTime pLoanDate, OffsetDateTime pLoanReturnDate, boolean pLoanReturned
-	) throws SQLException
-	{
-		try (PreparedStatement stmt = conn.prepareStatement(
-			"SELECT * from library_api.update_physical_loan(?, ?, ?, ?, ?)"))
-		{
-			stmt.setObject(1, pToken);
-			stmt.setObject(2, pLoanId);
-			stmt.setObject(3, pLoanDate);
-			stmt.setObject(4, pLoanReturnDate);
-			stmt.setObject(5, pLoanReturned);
-			ResultSet rs = stmt.executeQuery();
-			if (!rs.next())
-				throw new SQLException("No result returned from function 'update_physical_loan'");
-			return ResultType.fromResultSet(rs);
-		} catch (SQLException sqlExc)
-		{
-			logger.log(Level.SEVERE, "Error executing function 'update_physical_loan'", sqlExc);
-			throw sqlExc;
-		}
-	}
-
-	public static ResultType removePhysicalLoan(
-		String pToken, int pLoanId
-	) throws SQLException
-	{
-		try (PreparedStatement stmt = conn.prepareStatement(
-			"SELECT * from library_api.remove_physical_loan(?, ?)"))
-		{
-			stmt.setObject(1, pToken);
-			stmt.setObject(2, pLoanId);
-			ResultSet rs = stmt.executeQuery();
-			if (!rs.next())
-				throw new SQLException("No result returned from function 'remove_physical_loan'");
-			return ResultType.fromResultSet(rs);
-		} catch (SQLException sqlExc)
-		{
-			logger.log(Level.SEVERE, "Error executing function 'remove_physical_loan'", sqlExc);
-			throw sqlExc;
-		}
-	}
-
-	public static ResultType removeDigitalLoan(
-		String pToken, int pLoanId
-	) throws SQLException
-	{
-		try (PreparedStatement stmt = conn.prepareStatement(
-			"SELECT * from library_api.remove_digital_loan(?, ?)"))
-		{
-			stmt.setObject(1, pToken);
-			stmt.setObject(2, pLoanId);
-			ResultSet rs = stmt.executeQuery();
-			if (!rs.next())
-				throw new SQLException("No result returned from function 'remove_digital_loan'");
-			return ResultType.fromResultSet(rs);
-		} catch (SQLException sqlExc)
-		{
-			logger.log(Level.SEVERE, "Error executing function 'remove_digital_loan'", sqlExc);
-			throw sqlExc;
-		}
-	}
-
-	public static ResultType getMembers(
-		String pToken
-	) throws SQLException
-	{
-		try (PreparedStatement stmt = conn.prepareStatement(
-			"SELECT * from library_api.get_members(?)"))
-		{
-			stmt.setObject(1, pToken);
-			ResultSet rs = stmt.executeQuery();
-			if (!rs.next())
-				throw new SQLException("No result returned from function 'get_members'");
-			return ResultType.fromResultSet(rs);
-		} catch (SQLException sqlExc)
-		{
-			logger.log(Level.SEVERE, "Error executing function 'get_members'", sqlExc);
 			throw sqlExc;
 		}
 	}

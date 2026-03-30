@@ -6,7 +6,7 @@
 
 package com.unazed.LibraryManagement;
 
-import com.google.gson.JsonObject;
+import com.google.gson.JsonElement;
 import com.unazed.LibraryManagement.SqlInterface;
 import com.unazed.LibraryManagement.model.gen.ResultType;
 import java.sql.*;
@@ -97,7 +97,7 @@ public class DatabaseInternalFunctions
 		}
 	}
 
-	public static JsonObject decodeToken(
+	public static JsonElement decodeToken(
 		String pToken
 	) throws SQLException
 	{
@@ -108,7 +108,7 @@ public class DatabaseInternalFunctions
 			ResultSet rs = stmt.executeQuery();
 			if (!rs.next())
 				throw new SQLException("No result returned from function 'decode_token'");
-			return (JsonObject) rs.getObject(1);
+			return (JsonElement) rs.getObject(1);
 		} catch (SQLException sqlExc)
 		{
 			logger.log(Level.SEVERE, "Error executing function 'decode_token'", sqlExc);

@@ -101,7 +101,7 @@ public class RegisterController extends ViewController
       eventBus.publish(
         new Events.UserAuthenticatedEvent(
           result.getDataAs(Users.class),
-          result.data().get("token").getAsString()));
+          result.getDataField("token").getAsString()));
     } catch (SQLException exc) {
       eventBus.publish(
         new Events.AlertEvent(AlertType.ERROR, "db.connection.error"));
