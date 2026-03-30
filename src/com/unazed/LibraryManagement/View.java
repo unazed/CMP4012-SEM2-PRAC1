@@ -14,6 +14,7 @@ public enum View
   DASHBOARD("Dashboard"), APP_MENU("AppMenu"),
   DASHBOARD_ADD_MODIFY_BOOKS("dashboard/AddModifyBooks"),
   DASHBOARD_VIEW_BOOKS("dashboard/ViewBooks"),
+  DASHBOARD_VIEW_BOOK_DETAIL("dashboard/ViewBookDetail"),
   DASHBOARD_VIEW_MY_LOANS("dashboard/ViewMyLoans"),
   DASHBOARD_VIEW_MEMBERS("dashboard/ViewMembers"),
   DASHBOARD_VIEW_MEMBERS_DETAIL("dashboard/ViewMembersDetail"),

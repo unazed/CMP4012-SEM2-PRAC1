@@ -13,7 +13,11 @@ import com.unazed.LibraryManagement.ResourceLoader;
 import com.unazed.LibraryManagement.View;
 import com.unazed.LibraryManagement.ViewController;
 import com.unazed.LibraryManagement.controller.DashboardController.DashboardEvents.AuxDataReceiver;
+import com.unazed.LibraryManagement.controller.dashboard.BookModifyViewController;
+import com.unazed.LibraryManagement.controller.dashboard.BookViewController;
+import com.unazed.LibraryManagement.controller.dashboard.LoanViewController;
 import com.unazed.LibraryManagement.controller.dashboard.MemberViewController;
+import com.unazed.LibraryManagement.controller.dashboard.MyLoansViewController;
 import com.unazed.LibraryManagement.model.gen.UserRole;
 
 import javafx.fxml.FXML;
@@ -84,7 +88,12 @@ public class DashboardController extends ViewController.UserAwareController
   private EventBus eventBus = EventBus.get();
   private Map<String, Class<? extends ViewController.UserAwareController>>
     menuItemControllerMap = Map.of(
-      "View all members", MemberViewController.class);
+      "View all members", MemberViewController.class,
+      "View books", BookViewController.class,
+      "View my loans", MyLoansViewController.class,
+      "View all loans", LoanViewController.class,
+      "Add/modify books", BookModifyViewController.class
+    );
 
   @Override
   public final void whenUserAvailable(String userToken)
@@ -156,6 +165,7 @@ public class DashboardController extends ViewController.UserAwareController
           + " does not extend UserAwareController");
       }
       userAwareController.setBoundUser(getBoundUser());
+      userAwareController.setBoundUserToken(getBoundUserToken());
       userAwareController.whenUserAvailable(getBoundUserToken());
       spDashboardContent.setContent(root);
     } catch (IOException ioExc)

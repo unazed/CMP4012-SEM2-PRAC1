@@ -18,3 +18,5 @@ remove_loan 2026-03-20T18:08:28Z Mindaugas Taujanskas <mindaugas.taujanskas@prot
 list_users 2026-03-26T15:23:08Z Mindaugas Taujanskas <mindaugas.taujanskas@proton.me> # Functions for listing all users
 login_with_token 2026-03-26T18:40:16Z Mindaugas Taujanskas <mindaugas.taujanskas@proton.me> # Add utilities for logging in with session tokens
 update_user_details 2026-03-30T13:44:42Z Mindaugas Taujanskas <mindaugas.taujanskas@proton.me> # Add function for updating user details
+get_authors 2026-03-30T17:21:32Z Mindaugas Taujanskas <mindaugas.taujanskas@proton.me> # Function for retrieving all authors
+add_author 2026-03-30T18:06:22Z Mindaugas Taujanskas <mindaugas.taujanskas@proton.me> # Functions for adding/associating authors with books

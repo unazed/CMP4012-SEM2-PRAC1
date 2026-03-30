@@ -6,7 +6,8 @@
 
 package com.unazed.LibraryManagement.model.gen;
 
-public record PhysicalBooks(
-	String book_isbn,
-	Integer book_quantity
+public record Authors(
+	Integer author_id,
+	String author_first_name,
+	String author_last_name
 ) {}

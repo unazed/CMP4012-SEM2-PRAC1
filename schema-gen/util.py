@@ -1,8 +1,8 @@
 psql_java_type_map = {
     # numeric
-    "integer": "int",
-    "bigint": "long",
-    "smallint": "short",
+    "integer": "Integer",
+    "bigint": "Long",
+    "smallint": "Short",
     "numeric": "java.math.BigDecimal",
     "decimal": "java.math.BigDecimal",
     "real": "float",

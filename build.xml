@@ -28,6 +28,8 @@
       <arg value="DigitalBooks" />
       <arg value="PhysicalBookLoans" />
       <arg value="DigitalBookLoans" />
+      <arg value="Books" />
+      <arg value="Authors" />
       <arg value="--package" />
       <arg value="com.unazed.LibraryManagement.model.gen" />
       <arg value="--schema" />

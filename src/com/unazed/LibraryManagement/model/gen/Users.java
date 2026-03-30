@@ -11,7 +11,7 @@ import com.unazed.LibraryManagement.model.gen.UserStatus;
 import java.time.LocalDateTime;
 
 public record Users(
-	int user_id,
+	Integer user_id,
 	String email,
 	String username,
 	UserRole user_role,

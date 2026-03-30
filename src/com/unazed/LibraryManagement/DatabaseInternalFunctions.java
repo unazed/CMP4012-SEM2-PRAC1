@@ -59,6 +59,25 @@ public class DatabaseInternalFunctions
 		}
 	}
 
+	public static String getUserRole(
+		Integer pUserId
+	) throws SQLException
+	{
+		try (PreparedStatement stmt = conn.prepareStatement(
+			"SELECT * from library_internal.get_user_role(?)"))
+		{
+			stmt.setObject(1, pUserId);
+			ResultSet rs = stmt.executeQuery();
+			if (!rs.next())
+				throw new SQLException("No result returned from function 'get_user_role'");
+			return (String) rs.getObject(1);
+		} catch (SQLException sqlExc)
+		{
+			logger.log(Level.SEVERE, "Error executing function 'get_user_role'", sqlExc);
+			throw sqlExc;
+		}
+	}
+
 	public static String normalizeEmail(
 		String email
 	) throws SQLException
@@ -117,7 +136,7 @@ public class DatabaseInternalFunctions
 	}
 
 	public static boolean existsUser(
-		int pUserId
+		Integer pUserId
 	) throws SQLException
 	{
 		try (PreparedStatement stmt = conn.prepareStatement(
@@ -173,25 +192,6 @@ public class DatabaseInternalFunctions
 		}
 	}
 
-	public static String getUserRole(
-		int pUserId
-	) throws SQLException
-	{
-		try (PreparedStatement stmt = conn.prepareStatement(
-			"SELECT * from library_internal.get_user_role(?)"))
-		{
-			stmt.setObject(1, pUserId);
-			ResultSet rs = stmt.executeQuery();
-			if (!rs.next())
-				throw new SQLException("No result returned from function 'get_user_role'");
-			return (String) rs.getObject(1);
-		} catch (SQLException sqlExc)
-		{
-			logger.log(Level.SEVERE, "Error executing function 'get_user_role'", sqlExc);
-			throw sqlExc;
-		}
-	}
-
 	public static boolean existsBookByIsbn(
 		String pIsbn
 	) throws SQLException
@@ -211,7 +211,7 @@ public class DatabaseInternalFunctions
 		}
 	}
 
-	public static int getMaxConcurrentPhysicalLoans(
+	public static Integer getMaxConcurrentPhysicalLoans(
 		String pIsbn, OffsetDateTime pFrom, OffsetDateTime pTo
 	) throws SQLException
 	{
@@ -224,7 +224,7 @@ public class DatabaseInternalFunctions
 			ResultSet rs = stmt.executeQuery();
 			if (!rs.next())
 				throw new SQLException("No result returned from function 'get_max_concurrent_physical_loans'");
-			return (int) rs.getObject(1);
+			return (Integer) rs.getObject(1);
 		} catch (SQLException sqlExc)
 		{
 			logger.log(Level.SEVERE, "Error executing function 'get_max_concurrent_physical_loans'", sqlExc);
@@ -232,7 +232,7 @@ public class DatabaseInternalFunctions
 		}
 	}
 
-	public static int getQtyPhysicalLoans(
+	public static Integer getQtyPhysicalLoans(
 		String pIsbn
 	) throws SQLException
 	{
@@ -243,7 +243,7 @@ public class DatabaseInternalFunctions
 			ResultSet rs = stmt.executeQuery();
 			if (!rs.next())
 				throw new SQLException("No result returned from function 'get_qty_physical_loans'");
-			return (int) rs.getObject(1);
+			return (Integer) rs.getObject(1);
 		} catch (SQLException sqlExc)
 		{
 			logger.log(Level.SEVERE, "Error executing function 'get_qty_physical_loans'", sqlExc);
@@ -252,7 +252,7 @@ public class DatabaseInternalFunctions
 	}
 
 	public static boolean isActivePhysicalLoan(
-		int pLoanId
+		Integer pLoanId
 	) throws SQLException
 	{
 		try (PreparedStatement stmt = conn.prepareStatement(
@@ -271,7 +271,7 @@ public class DatabaseInternalFunctions
 	}
 
 	public static boolean isActiveDigitalLoan(
-		int pLoanId
+		Integer pLoanId
 	) throws SQLException
 	{
 		try (PreparedStatement stmt = conn.prepareStatement(
@@ -327,7 +327,7 @@ public class DatabaseInternalFunctions
 		}
 	}
 
-	public static int getQtyDigitalLoans(
+	public static Integer getQtyDigitalLoans(
 		String pIsbn
 	) throws SQLException
 	{
@@ -338,7 +338,7 @@ public class DatabaseInternalFunctions
 			ResultSet rs = stmt.executeQuery();
 			if (!rs.next())
 				throw new SQLException("No result returned from function 'get_qty_digital_loans'");
-			return (int) rs.getObject(1);
+			return (Integer) rs.getObject(1);
 		} catch (SQLException sqlExc)
 		{
 			logger.log(Level.SEVERE, "Error executing function 'get_qty_digital_loans'", sqlExc);
@@ -365,8 +365,27 @@ public class DatabaseInternalFunctions
 		}
 	}
 
+	public static boolean existsAuthorById(
+		Integer pAuthorId
+	) throws SQLException
+	{
+		try (PreparedStatement stmt = conn.prepareStatement(
+			"SELECT * from library_internal.exists_author_by_id(?)"))
+		{
+			stmt.setObject(1, pAuthorId);
+			ResultSet rs = stmt.executeQuery();
+			if (!rs.next())
+				throw new SQLException("No result returned from function 'exists_author_by_id'");
+			return (boolean) rs.getObject(1);
+		} catch (SQLException sqlExc)
+		{
+			logger.log(Level.SEVERE, "Error executing function 'exists_author_by_id'", sqlExc);
+			throw sqlExc;
+		}
+	}
+
 	public static boolean userHasPhysicalLoan(
-		int pUserId, String pIsbn, OffsetDateTime pFromDate, OffsetDateTime pToDate
+		Integer pUserId, String pIsbn, OffsetDateTime pFromDate, OffsetDateTime pToDate
 	) throws SQLException
 	{
 		try (PreparedStatement stmt = conn.prepareStatement(

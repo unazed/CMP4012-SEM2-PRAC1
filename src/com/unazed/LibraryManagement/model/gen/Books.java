@@ -6,7 +6,11 @@
 
 package com.unazed.LibraryManagement.model.gen;
 
-public record PhysicalBooks(
+import java.time.LocalDate;
+
+public record Books(
 	String book_isbn,
-	Integer book_quantity
+	String book_name,
+	LocalDate book_publish_date,
+	boolean book_has_digital
 ) {}

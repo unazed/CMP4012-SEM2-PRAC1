@@ -9,10 +9,10 @@ package com.unazed.LibraryManagement.model.gen;
 import java.time.OffsetDateTime;
 
 public record PhysicalBookLoans(
-	int loan_id,
+	Integer loan_id,
 	String book_isbn,
-	int user_id,
-	int loan_qty,
+	Integer user_id,
+	Integer loan_qty,
 	OffsetDateTime loan_date,
 	OffsetDateTime loan_return_date,
 	boolean loan_returned

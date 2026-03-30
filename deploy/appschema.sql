@@ -16,7 +16,8 @@ BEGIN;
     'insufficient_quantity',
     'invalid_params',
     'loan_not_found',
-    'loan_active'
+    'loan_active',
+    'author_not_found'
   );
 
   CREATE TYPE library_internal.auth_error_code AS ENUM (
