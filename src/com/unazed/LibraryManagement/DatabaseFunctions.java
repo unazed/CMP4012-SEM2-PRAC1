@@ -8,6 +8,7 @@ package com.unazed.LibraryManagement;
 
 import com.unazed.LibraryManagement.SqlInterface;
 import com.unazed.LibraryManagement.model.gen.ResultType;
+import com.unazed.LibraryManagement.model.gen.UserStatus;
 import java.sql.*;
 import java.time.LocalDate;
 import java.time.OffsetDateTime;
@@ -20,6 +21,29 @@ public class DatabaseFunctions
 	private static final SqlInterface sqlInterface = SqlInterface.get();
 
 	private static final Connection conn = sqlInterface.getConnection();
+
+	public static ResultType updateUserDetails(
+		String pToken, int pUserId, String pEmail, String pUsername, UserStatus pAccountStatus
+	) throws SQLException
+	{
+		try (PreparedStatement stmt = conn.prepareStatement(
+			"SELECT * from library_api.update_user_details(?, ?, ?, ?, ?)"))
+		{
+			stmt.setObject(1, pToken);
+			stmt.setObject(2, pUserId);
+			stmt.setObject(3, pEmail);
+			stmt.setObject(4, pUsername);
+			stmt.setObject(5, pAccountStatus.value(), Types.OTHER);
+			ResultSet rs = stmt.executeQuery();
+			if (!rs.next())
+				throw new SQLException("No result returned from function 'update_user_details'");
+			return ResultType.fromResultSet(rs);
+		} catch (SQLException sqlExc)
+		{
+			logger.log(Level.SEVERE, "Error executing function 'update_user_details'", sqlExc);
+			throw sqlExc;
+		}
+	}
 
 	public static ResultType registerUser(
 		String pEmail, String pUsername, String pPassword

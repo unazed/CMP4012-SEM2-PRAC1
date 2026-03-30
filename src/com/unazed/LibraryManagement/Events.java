@@ -34,8 +34,6 @@ public class Events
     public UserAuthenticatedEvent(Users user, String userToken)
     {
       this.user = user;
-      logger.info("user authenticated: " + user.username() + " (ID: " + user.user_id() + ")");
-      logger.info("role: " + user.user_role());
       this.userToken = userToken;
     }
 

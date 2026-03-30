@@ -53,7 +53,7 @@ public class LoginController extends ViewController
 
   private boolean tryLoginWithToken(String token)
   {
-    logger.info("Attempting login with stored token: " + token);
+    logger.info("Attempting login with stored token");
     try
     {
       ResultType result = DatabaseFunctions.getTokenInformation(token);
@@ -107,13 +107,13 @@ public class LoginController extends ViewController
         return;
       }
       logger.info("User logged in: " + email);
+      String token = result.getDataField("token").getAsString();
       Users user = result.getDataAs(Users.class);
       if (cbRememberLogin.isSelected())
       {
-        String token = result.getDataField("token").getAsString();
         Preferences.userNodeForPackage(LoginController.class)
           .put("storedToken", token);
-        logger.info("Remembering token: " + token + " for email: " + email);
+        logger.info("Remembering token for email: " + email);
       } else
       {
         Preferences.userNodeForPackage(LoginController.class)
@@ -121,8 +121,7 @@ public class LoginController extends ViewController
         logger.info("Clearing stored token for email: " + email);
       }
       eventBus.publish(
-        new Events.UserAuthenticatedEvent(
-          user, result.getDataField("token").getAsString()));
+        new Events.UserAuthenticatedEvent(user, token));
     } catch (SQLException sqlExc)
     {
       eventBus.publish(

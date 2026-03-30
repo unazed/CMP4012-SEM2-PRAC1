@@ -178,6 +178,11 @@ def try_resolve_type(
     return 'c', generate_composite_type(
       type_name, composite_info, output_types_dir, package_types,
       gson_provider_package)
+  elif typtype == 'e':
+    enum_info = get_sql_enum_info(g_conn, schema, type_name)
+    print(f"!! resolved enum type {type_name!r} with info:")
+    pprint(enum_info)
+    return 'e', f"{package_types}.{enum_info['name']}"
   else:
     print(f"!! unsupported typtype {typtype!r} for type {type_name!r}")
     return None
@@ -218,9 +223,13 @@ def generate_functions_class(
               f"(\n\t\t{args_str}\n\t) throws SQLException" + "\n\t{\n")
       
       stmt_set_vars = []
-      for i, (arg_name, _) in enumerate(func_info["args"], start=1):
+      for i, (arg_name, (arg_kind, arg_type)) \
+          in enumerate(func_info["args"], start=1):
         java_arg_name = snake_to_camel(arg_name)
-        stmt_set_vars.append(f"\t\t\tstmt.setObject({i}, {java_arg_name});")
+        if arg_kind == 'e':
+          stmt_set_vars.append(f"\t\t\tstmt.setObject({i}, {java_arg_name}.value(), Types.OTHER);")
+        else:
+          stmt_set_vars.append(f"\t\t\tstmt.setObject({i}, {java_arg_name});")
       
       if func_info["ret"][0] == 'b':
         return_line = "return (" + short_type_name(func_info["ret"][1]) + ") rs.getObject(1);"
